@@ -1,0 +1,65 @@
+{
+  "accountEntryRestricted": true,
+  "accountEntryRestrictedObjectFieldName": "string",
+  "active": true,
+  "className": "string",
+  "defaultLanguageId": "string",
+  "enableCategorization": true,
+  "enableComments": true,
+  "enableFriendlyURLCustomization": true,
+  "enableIndexSearch": true,
+  "enableLocalization": true,
+  "enableObjectEntryDraft": true,
+  "enableObjectEntryHistory": true,
+  "externalReferenceCode": "string",
+  "label": {
+    "additionalProp1": "string"
+  },
+  "modifiable": true,
+  "name": "string",
+  "objectActions": [],
+  "objectFields": [
+    {
+      "DBType": "BigDecimal",
+      "externalReferenceCode": "string",
+      "indexed": true,
+      "indexedAsKeyword": true,
+      "indexedLanguageId": "string",
+      "label": {
+        "additionalProp1": "string"
+      },
+      "listTypeDefinitionExternalReferenceCode": "string",
+      "listTypeDefinitionId": 0,
+      "localized": true,
+      "name": "string",
+      "objectDefinitionExternalReferenceCode1": "string",
+      "objectFieldSettings": [],
+      "objectRelationshipExternalReferenceCode": "string",
+      "readOnlyConditionExpression": "string",
+      "required": true,
+      "state": true,
+      "system": true,
+      "businessType": "Aggregation",
+      "readOnly": "conditional"
+    }
+  ],
+  "objectFolderExternalReferenceCode": "string",
+  "objectLayouts": [],
+  "objectRelationships": [],
+  "objectValidationRules": [],
+  "objectViews": [],
+  "panelAppOrder": "string",
+  "panelCategoryKey": "string",
+  "pluralLabel": {
+    "additionalProp1": "string"
+  },
+  "portlet": true,
+  "scope": "string",
+  "status": {
+    "code": 0,
+    "label": "string"
+  },
+  "storageType": "string",
+  "system": true,
+  "titleObjectFieldName": "string"
+}
