@@ -3,10 +3,11 @@ description = "Resume demo development inside an already configured Liferay Demo
 prompt = """
 Please execute the Liferay Sales Engineering Resume Protocol for the current project:
 1. Perform Step 1: Verify Core Tooling & Check Updates (Blade, LDM, Python).
-2. Configuration Check: Verify and read the local `.env` file (LIFERAY_HOST, admin credentials).
-3. Boot Stack: Run `ldm run <project-name> -y` to boot up the containers completely non-interactively.
-4. Watch Logs: Stream and watch the container logs in real-time using LDM's log follow command (`ldm logs <project-name> -f` or launching run with follow `ldm run <project-name> -f`) so that you and the user can see Liferay's Tomcat startup logging in real-time.
-5. Status Check & Handoff: Once Liferay is running and healthy (verified via Tomcat "Server startup" or API check):
+2. Configuration & MCP Activation Check: Verify and read the local `.env` file (LIFERAY_HOST, admin credentials). Check the `./files/portal-ext.properties` file and verify if it contains the setting `feature.flag.LPD-63311=true`. If missing or set to `false`, add or update it to `feature.flag.LPD-63311=true` to ensure the Liferay MCP Server is activated.
+3. Boot Stack: Run `ldm run -y` to boot up the containers completely non-interactively.
+4. Watch Logs: Stream and watch the container logs in real-time using LDM's log follow command (`ldm logs -f` or launching run with follow `ldm run -f`) so that you and the user can see Liferay's Tomcat startup logging in real-time.
+5. Status & MCP Verification Check: Once Liferay is running and healthy (verified via Tomcat "Server startup" marker or connection test):
+   - Verify that the Liferay MCP Server is running and the credentials work by querying the endpoint `<LIFERAY_HOST>/o/mcp` using Basic Authentication with the credentials from the local `.env` file.
    - Do NOT start or reset the demo planning phase by default (planning may have already concluded).
    - Inspect the workspace to check the status of the current system (e.g., read `DEMO_PLAN.md` if it exists, check for specifications in `specs/`, and scan files inside `liferay/`).
    - Summarize the current state of development clearly (e.g., what has already been planned, built, or deployed, and what milestones are remaining).
