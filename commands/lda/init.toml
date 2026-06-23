@@ -2,22 +2,70 @@ description = "Initialize and scaffold a brand new Liferay LDM project and works
 
 prompt = """
 Please execute the Liferay Sales Engineering Initialization Protocol for a fresh project in the current directory:
-1. Perform Step 1: Verify Core Tooling & Check Updates (Blade, LDM, Python).
-2. Prompt for setup details (Local URL, Liferay version, and optional GitHub repo tracking) using `ask_user`.
+
+1. Perform Step 1: Verify Core Tooling & Check Updates
+   - **Blade CLI:** Run `blade version` to get the current version. If the output indicates a newer version is available, you MUST explicitly ask the user for permission (using `ask_user`) before running `blade update`.
+   - **Liferay Docker Manager (LDM):** Run `ldm --version` to get the current version. If LDM is out of date, you MUST explicitly ask the user for permission (using `ask_user`) before running `ldm upgrade`.
+   - **Python Availability:** Run `python --version`. Ensure the active version is **Python 3.10 or higher** to support LDM's internal handlers, Playwright testing, and automated Python helpers.
+
+2. Version Retrieval & User Prompts:
+   - Run `blade init --list` to fetch the available Liferay release tags (e.g., `dxp-2026.q2.4`, `dxp-2026.q1.9-lts`). Identify which corresponds to the latest Quarterly release and which to the LTS (newest Q1 release).
+   - Prompt the user using `ask_user` for setup details:
+     * **Local URL:** The preferred local URL for the Liferay instance (e.g., `http://localhost:8080` or `http://myproject.local`).
+     * **Liferay Version:** Present a multiple-choice list containing:
+       - Latest (display the actual version tag found in step 2, e.g., `Latest (dxp-2026.q2.4)`)
+       - LTS (display the actual version tag found in step 2, e.g., `LTS (dxp-2026.q1.9-lts)`)
+       - Use a manual placeholder text option for "Other" to let the user input a specific version tag directly (e.g., `dxp-2024.q1.27`).
+     * **GitHub Repository (Optional):** Ask if they want to create a remote GitHub repository to track their workspace source code.
+     * **Repo Visibility (Optional):** If yes, ask if the repository should be Private (default) or Public.
+     * **Repo Path (Optional):** If yes, ask for the organization/repo path (e.g., `lr-timbraun/test-demo`), defaulting to personal account if omitted.
+   - **CRITICAL TAG RESOLUTION:** Resolve and translate any choice selected to the **exact raw version tag** (e.g. `dxp-2026.q2.4` or `dxp-2026.q1.9-lts`). Under no circumstances should the literal words "latest" or "lts" (or labels containing descriptive text like "Latest (dxp-2026.q2.4)") be passed as the `<version-tag>` to Blade or LDM.
+
 3. Scaffolding:
-   - Run in-place LDM initialization (`ldm init . --tag <version-tag> --host-name <domain> -y`) and Blade workspace initialization (`blade init -v <version-tag> liferay`) directly inside the current directory to create a flat, conflict-free structure with proper host routing.
+   - Run in-place LDM initialization: `ldm init . --tag <version-tag> --host-name <clean-local-domain> -y`
+     * Note on directory: You MUST pass `.` as the target directory to initialize in-place and prevent creating a nested folder.
+     * Note on host-name: Derive the clean local domain from the Local URL provided by the user (e.g., `321test.demo` if URL is `http://321test.demo`). This is critical to configure Traefik host routing and prevent 404 errors.
+     * Note on non-interactivity: You MUST pass the `-y` / `--non-interactive` flag so that it boots completely headless in the background without prompting for inputs.
+   - Run Blade Workspace initialization: `blade init -v <version-tag> liferay` directly inside the current directory to bootstrap a standard Liferay Workspace in a `./liferay/` subdirectory.
+
 4. Admin Credential Resolution & MCP Activation (Automated):
    - Immediately after LDM initialization, check the newly created `./files/portal-ext.properties` file.
    - Parse and extract the values for `default.admin.email.address.prefix` and `default.admin.password`.
    - If `default.admin.email.address.prefix` is not defined or is empty, fallback to "test".
    - If `default.admin.password` is not defined or is empty, fallback to "test".
    - Construct the administrator email by combining the prefix with the "@liferay.com" suffix (resulting in "{prefix}@liferay.com").
-   - **MCP Server Activation:** Verify if `./files/portal-ext.properties` contains the setting `feature.flag.LPD-63311=true`. If missing or set to `false`, add or update it to `feature.flag.LPD-63311=true` to enable the Liferay MCP Server.
-5. Optional Git: Provision the remote GitHub repository tracking exclusively the `./liferay/` workspace subdirectory. You MUST append IDE/AI directories (.claude/, .cursor/, .gemini/, .windsurf/, .workspace-rules/) to the `./liferay/.gitignore` file before committing and pushing.
-6. Configuration: Write the project-specific `.env` file containing the custom LIFERAY_HOST (local URL), and the automatically resolved default LIFERAY_ADMIN_EMAIL_ADDRESS and LIFERAY_ADMIN_PASSWORD.
+   - **MCP Server Activation:** Verify if `./files/portal-ext.properties` contains the setting `feature.flag.LPD-63311=true`. If missing or set to `false`, add or update it to `feature.flag.LPD-63311=true` to enable Liferay's Model Context Protocol (MCP) Server.
+
+5. Optional GitHub Repository Provisioning:
+   - If the user chose to create a GitHub repository, you MUST track *only* the `./liferay/` workspace subdirectory and keep it clean of IDE/AI configuration noise:
+     * Change directories into the `./liferay/` folder.
+     * **Exclusions:** Append the following AI/IDE folders to the `./liferay/.gitignore` file before making your initial commit to prevent tracking local IDE rules and agent files:
+       ```gitignore
+       # AI & Agent Workspace Configurations
+       .claude/
+       .cursor/
+       .gemini/
+       .windsurf/
+       .workspace-rules/
+       ```
+     * Initialize Git locally: `git init`.
+     * Add and commit the initial workspace: `git add .` and `git commit -m "Initial commit of Liferay Workspace"`.
+     * Create the remote GitHub repository using GitHub CLI:
+       `gh repo create <repo-path-or-name> --private` (or `--public` based on input) `--source=. --remote=origin --push`.
+     * Ensure default branch is pushed (e.g., `git push -u origin master` or `git push -u origin main`).
+     * Return to the main project directory.
+
+6. Configuration: Write the project-specific `.env` file directly in the current working directory containing:
+   ```env
+   LIFERAY_HOST=<user-provided-url>
+   LIFERAY_ADMIN_EMAIL_ADDRESS=<resolved-default-admin-email>
+   LIFERAY_ADMIN_PASSWORD=<resolved-default-admin-password>
+   ```
+
 7. Boot & MCP Verification:
-   - Run `ldm run -y` to launch the local containers completely non-interactively without selector lists or prompts.
-   - Once Tomcat boot is complete (verified via container logs or connection test), verify that the Liferay MCP Server is running and the credentials work by querying the endpoint `<LIFERAY_HOST>/o/mcp` using Basic Authentication with the resolved default admin email and password.
+   - Run `ldm run -y` directly inside the current directory to launch the local containers completely non-interactively without selector lists or prompts.
+   - Once Tomcat boot is complete (verified via Tomcat "Server startup" marker or connection test), verify that the Liferay MCP Server is running and the credentials work by querying the endpoint `<LIFERAY_HOST>/o/mcp` using Basic Authentication (with the resolved default admin email and password).
+
 8. Agent Admin Account Provisioning (Automated):
    - Immediately after verifying the MCP Server is active, create a second administrator account specifically for AI Agent operations.
    - Account details:
@@ -29,6 +77,7 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
    - Provision this user using Liferay's Headless Admin User REST APIs or MCP tools (authenticating as the default administrator) and assign them the "Administrator" role.
    - Verify the newly created agent account by querying the MCP Server endpoint `<LIFERAY_HOST>/o/mcp` using Basic Authentication with `shirley.temple@liferay.com` and her generated password.
    - Once successfully verified, overwrite the project's local `.env` file, saving `shirley.temple@liferay.com` and her generated password as `LIFERAY_ADMIN_EMAIL_ADDRESS` and `LIFERAY_ADMIN_PASSWORD` respectively (retaining the LIFERAY_HOST URL).
+
 9. Plan: Transition directly into Centralized Planning (Phase 1) to begin demo building.
 
 Arguments: {{args}}
