@@ -34,11 +34,10 @@ def get_credentials():
     email = creds.get("LIFERAY_ADMIN_EMAIL_ADDRESS")
     password = creds.get("LIFERAY_ADMIN_PASSWORD")
     
-    # Derive host from current directory name (matches repo name)
-    # We find the .env file parent as the project root
-    project_root = os.path.dirname(env_path)
-    repo_name = os.path.basename(project_root)
-    host = f"https://webserver-{repo_name}-prd.lfr.cloud"
+    # Read Liferay local/remote host from .env, fallback to standard LDM localhost
+    host = creds.get("LIFERAY_HOST")
+    if not host:
+        host = "http://localhost:8080"
     
     if not email or not password:
         print(f"Error: Credentials missing in {env_path}")

@@ -16,7 +16,7 @@ import json
 # Setup from .env
 email = os.environ.get("LIFERAY_ADMIN_EMAIL_ADDRESS")
 password = os.environ.get("LIFERAY_ADMIN_PASSWORD")
-host = "https://webserver-{reponame}-prd.lfr.cloud"
+host = os.environ.get("LIFERAY_HOST", "http://localhost:8080")
 
 def create_entry(plural_name, entry_data):
     url = f"{host}/o/c/{plural_name}/"

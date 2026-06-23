@@ -1,0 +1,15 @@
+description = "Initialize and scaffold a brand new Liferay LDM project and workspace in the current directory."
+
+prompt = """
+Please execute the Liferay Sales Engineering Initialization Protocol for a fresh project in the current directory:
+1. Perform Step 1: Verify Core Tooling & Check Updates (Blade, LDM, Python).
+2. Prompt for setup details (Local URL, Liferay version, Admin Email, Admin Password, and optional GitHub repo tracking) using `ask_user`.
+   - Prefill/Default the 'Admin Email' and 'Admin Password' questions using the global settings `LIFERAY_DEFAULT_ADMIN_EMAIL_ADDRESS` and `LIFERAY_DEFAULT_ADMIN_PASSWORD` from your environment if they are configured, otherwise fallback to 'test@liferay.com' and 'test'.
+3. Scaffolding: Run in-place LDM initialization (`ldm init . --tag <version-tag> --host-name <domain> -y`) and Blade workspace initialization (`blade init -v <version-tag> liferay`) directly inside the current directory to create a flat, conflict-free structure with proper host routing.
+4. Optional Git: Provision the remote GitHub repository tracking exclusively the `./liferay/` workspace subdirectory. You MUST append IDE/AI directories (.claude/, .cursor/, .gemini/, .windsurf/, .workspace-rules/) to the `./liferay/.gitignore` file before committing and pushing.
+5. Configuration: Write the project-specific `.env` file containing the custom LIFERAY_HOST, LIFERAY_ADMIN_EMAIL_ADDRESS, and LIFERAY_ADMIN_PASSWORD collected from the user.
+6. Boot: Run `ldm run <project-name> -y` (specifying the exact project name and -y flag) to launch the local containers completely non-interactively without selector lists or prompts.
+7. Plan: Transition directly into Centralized Planning (Phase 1) to begin demo building.
+
+Arguments: {{args}}
+"""

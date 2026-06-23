@@ -1,0 +1,16 @@
+description = "Resume demo development inside an already configured Liferay Demo Agent (LDA) workspace."
+
+prompt = """
+Please execute the Liferay Sales Engineering Resume Protocol for the current project:
+1. Perform Step 1: Verify Core Tooling & Check Updates (Blade, LDM, Python).
+2. Configuration Check: Verify and read the local `.env` file (LIFERAY_HOST, admin credentials).
+3. Boot Stack: Run `ldm run <project-name> -y` to boot up the containers completely non-interactively.
+4. Watch Logs: Stream and watch the container logs in real-time using LDM's log follow command (`ldm logs <project-name> -f` or launching run with follow `ldm run <project-name> -f`) so that you and the user can see Liferay's Tomcat startup logging in real-time.
+5. Status Check & Handoff: Once Liferay is running and healthy (verified via Tomcat "Server startup" or API check):
+   - Do NOT start or reset the demo planning phase by default (planning may have already concluded).
+   - Inspect the workspace to check the status of the current system (e.g., read `DEMO_PLAN.md` if it exists, check for specifications in `specs/`, and scan files inside `liferay/`).
+   - Summarize the current state of development clearly (e.g., what has already been planned, built, or deployed, and what milestones are remaining).
+   - Present this concise status report to the user and suggest the next logical action (e.g., resuming a specific sub-agent implementation task, validating deployed fragments, etc.), waiting for their direction on how they want to proceed.
+
+Arguments: {{args}}
+"""

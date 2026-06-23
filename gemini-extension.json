@@ -1,0 +1,21 @@
+{
+  "name": "liferay-demo-agents",
+  "version": "1.0.0",
+  "description": "Liferay Demo Builder & Orchestrator with Blade CLI and Liferay Docker Manager (LDM).",
+  "migratedTo": "https://github.com/lr-timbraun/liferay-demo-agents",
+  "contextFileName": "GEMINI.md",
+  "settings": [
+    {
+      "name": "Default Admin Email",
+      "description": "Default administrator account email address (used as prefill during initialization).",
+      "envVar": "LIFERAY_DEFAULT_ADMIN_EMAIL_ADDRESS",
+      "sensitive": false
+    },
+    {
+      "name": "Default Admin Password",
+      "description": "Default administrator account password (used as prefill during initialization).",
+      "envVar": "LIFERAY_DEFAULT_ADMIN_PASSWORD",
+      "sensitive": true
+    }
+  ]
+}

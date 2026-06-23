@@ -1,0 +1,26 @@
+description = "Activate and convert an existing local LDM project directory into a full Liferay Demo Agent (LDA) workspace."
+
+prompt = """
+Please execute the Liferay Sales Engineering Activation Protocol (Converting an existing plain LDM project into a full LDA workspace):
+1. Perform Step 1: Verify Core Tooling & Check Updates (Blade, LDM, Python).
+2. Project Audit & URL Extraction:
+   - Verify the current folder contains an existing LDM project (has `docker-compose.yml` or `meta`). Extract the project name (CWD name) and Liferay tag.
+   - **Automated URL Extraction:** Do NOT ask the user to choose or input the URL. Read the local `meta` file inside the current directory. Parse `host_name`, `port`, `ssl`, and `ssl_port`. Reconstruct the exact LIFERAY_HOST URL:
+     * If `ssl` is "true", URL is `https://{host_name}` (append `:{ssl_port}` if ssl_port is not 443).
+     * If `ssl` is not "true" (or "false"), URL is `http://{host_name}:{port}` (e.g. `http://zdweb.demo:8080`).
+3. Sourcing Active Credentials: Ask the user using `ask_user` for the existing active portal administrator credentials:
+   - **Admin Email:** The active portal admin email address. Prefill/Default this using the global setting `LIFERAY_DEFAULT_ADMIN_EMAIL_ADDRESS` from your environment if configured, otherwise fallback to 'test@liferay.com'.
+   - **Admin Password:** The active portal admin password. Prefill/Default this using the global setting `LIFERAY_DEFAULT_ADMIN_PASSWORD` from your environment if configured, otherwise fallback to 'test'.
+   - **GitHub Repository (Optional):** Ask if they want to create a remote GitHub repository to track their workspace source code.
+   - **Repo Visibility (Optional):** If yes, ask if the repository should be Private (default) or Public.
+   - **Repo Path (Optional):** If yes, ask for the organization/repo path (e.g., `lr-timbraun/test-demo`), defaulting to personal account if omitted.
+4. Workspace Scaffolding:
+   - If `./liferay/` does not exist, run `blade init -v <extracted-tag> liferay` directly inside the current directory to scaffold a standard Liferay Workspace.
+   - Create standard agent folders and plans if they do not exist: `specs/`, `input/`, and a placeholder `DEMO_PLAN.md`.
+5. Optional Git: If selected, provision the remote GitHub repository tracking exclusively the `./liferay/` workspace subdirectory. You MUST append IDE/AI directories (.claude/, .cursor/, .gemini/, .windsurf/, .workspace-rules/) to `./liferay/.gitignore` before committing and pushing.
+6. Configuration: Create or update the project's local `.env` file with the extracted `LIFERAY_HOST`, and the sourced `LIFERAY_ADMIN_EMAIL_ADDRESS=<user-provided-email>` and `LIFERAY_ADMIN_PASSWORD=<user-provided-password>`.
+7. Silent Boot & Verification: Ensure LDM is healthy and active by running `ldm run <project-name> -y` to boot the stack and verify connectivity.
+8. Boot & Begin Implementation: Once the container is running and healthy (verified via Tomcat "Server startup" marker or local connection test), do NOT stop or hand off to the user. Immediately transition into Centralized Planning (Phase 1) and begin implementation for the requested demo in the same window/session.
+
+Arguments: {{args}}
+"""
