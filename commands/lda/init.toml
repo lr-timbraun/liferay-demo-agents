@@ -8,17 +8,18 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
    - **Liferay Docker Manager (LDM):** Run `ldm --version` to get the current version. If LDM is out of date, you MUST explicitly ask the user for permission (using `ask_user`) before running `ldm upgrade`.
    - **Python Availability:** Run `python --version`. Ensure the active version is **Python 3.10 or higher** to support LDM's internal handlers, Playwright testing, and automated Python helpers.
 
-2. Version Retrieval & User Prompts:
+2. Version Retrieval & Sequential User Prompts (Respecting Tool Limits):
    - Run `blade init --list` to fetch the available Liferay release tags (e.g., `dxp-2026.q2.4`, `dxp-2026.q1.9-lts`). Identify which corresponds to the latest Quarterly release and which to the LTS (newest Q1 release).
-   - Prompt the user using `ask_user` for setup details:
+   - **First Prompt (Core Setup):** Call `ask_user` first with the following questions:
      * **Local URL:** The preferred local URL for the Liferay instance (e.g., `http://localhost:8080` or `http://myproject.local`).
      * **Liferay Version:** Present a multiple-choice list containing:
        - Latest (display the actual version tag found in step 2, e.g., `Latest (dxp-2026.q2.4)`)
        - LTS (display the actual version tag found in step 2, e.g., `LTS (dxp-2026.q1.9-lts)`)
        - Use a manual placeholder text option for "Other" to let the user input a specific version tag directly (e.g., `dxp-2024.q1.27`).
-     * **GitHub Repository (Optional):** Ask if they want to create a remote GitHub repository to track their workspace source code.
-     * **Repo Visibility (Optional):** If yes, ask if the repository should be Private (default) or Public.
-     * **Repo Path (Optional):** If yes, ask for the organization/repo path (e.g., `lr-timbraun/test-demo`), defaulting to personal account if omitted.
+     * **GitHub Tracking:** A Yes/No choice asking if they want to create a remote GitHub repository to track their workspace source code.
+   - **Second Prompt (GitHub Details - Conditional):** If and only if the user answered "Yes" to GitHub Tracking, execute a second, separate `ask_user` call with the remaining 2 questions (keeping them fully separate so the user can configure either one individually):
+     * **Repo Visibility:** A multiple-choice option for `Private` (default) or `Public`.
+     * **Repo Path:** A text input asking for the organization/repo path (e.g., `lr-timbraun/test-demo`), defaulting to their personal account if omitted.
    - **CRITICAL TAG RESOLUTION:** Resolve and translate any choice selected to the **exact raw version tag** (e.g. `dxp-2026.q2.4` or `dxp-2026.q1.9-lts`). Under no circumstances should the literal words "latest" or "lts" (or labels containing descriptive text like "Latest (dxp-2026.q2.4)") be passed as the `<version-tag>` to Blade or LDM.
 
 3. Scaffolding:

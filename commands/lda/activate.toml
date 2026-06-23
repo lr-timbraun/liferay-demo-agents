@@ -14,10 +14,11 @@ Please execute the Liferay Sales Engineering Activation Protocol (Converting an 
      * If `ssl` is "true", URL is `https://{host_name}` (append `:{ssl_port}` if ssl_port is not 443).
      * If `ssl` is not "true" (or "false"), URL is `http://{host_name}:{port}` (e.g. `http://zdweb.demo:8080`).
 
-3. Sourcing Optional Repo Tracking: Ask the user using `ask_user` if they want to track their workspace:
-   - **GitHub Repository (Optional):** Ask if they want to create a remote GitHub repository to track their workspace source code.
-   - **Repo Visibility (Optional):** If yes, ask if the repository should be Private (default) or Public.
-   - **Repo Path (Optional):** If yes, ask for the organization/repo path (e.g., `lr-timbraun/test-demo`), defaulting to personal account if omitted.
+3. Sourcing Optional Repo Tracking (Respecting Tool Limits):
+   - **First Prompt (Core Sourcing):** Call `ask_user` first with a Yes/No question asking if they want to create a remote GitHub repository to track their workspace source code.
+   - **Second Prompt (GitHub Details - Conditional):** If and only if the user answered "Yes" to GitHub tracking, execute a second, separate `ask_user` call with the remaining 2 questions (keeping them fully separate so the user can configure either one individually):
+     * **Repo Visibility:** A multiple-choice option for `Private` (default) or `Public`.
+     * **Repo Path:** A text input asking for the organization/repo path (e.g., `lr-timbraun/test-demo`), defaulting to their personal account if omitted.
 
 4. Admin Credential Resolution & MCP Activation (Automated):
    - Check the existing `./files/portal-ext.properties` file in the project.
