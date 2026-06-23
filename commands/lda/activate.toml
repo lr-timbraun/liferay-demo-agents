@@ -43,6 +43,7 @@ Please execute the Liferay Sales Engineering Activation Protocol (Converting an 
        .claude/
        .cursor/
        .gemini/
+       .github/
        .windsurf/
        .workspace-rules/
        ```

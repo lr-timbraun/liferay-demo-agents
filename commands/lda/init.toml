@@ -48,6 +48,7 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
        .claude/
        .cursor/
        .gemini/
+       .github/
        .windsurf/
        .workspace-rules/
        ```
