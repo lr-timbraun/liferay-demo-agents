@@ -13,8 +13,9 @@ Please execute the Liferay Sales Engineering Resume Protocol for the current pro
    - Check the `./files/portal-ext.properties` file in the project.
    - Verify if it contains the setting `feature.flag.LPD-63311=true`. If missing or set to `false`, add or update it to `feature.flag.LPD-63311=true` to ensure the Liferay MCP Server is activated.
 
-3. Boot Stack:
+3. Boot Stack (Synchronous):
    - Run `ldm run` inside the current directory to boot the container stack.
+   - **CRITICAL:** You MUST run this command synchronously (set `is_background = false` in your `run_shell_command` tool call). Do NOT background the process or use background execution constructs. Wait patiently for the command to finish executing completely (which takes 2-5 minutes as LDM blocks until Liferay's health checks pass) before proceeding.
 
 4. MCP Server Registration & Connection:
    - Once the boot process is complete and Liferay is active, Base64-encode the active agent credentials (`LIFERAY_ADMIN_EMAIL_ADDRESS:LIFERAY_ADMIN_PASSWORD`) read from the local `.env` file (corresponding to Shirley Temple's account).

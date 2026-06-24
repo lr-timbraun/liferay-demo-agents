@@ -66,9 +66,10 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
    LIFERAY_ADMIN_PASSWORD=<resolved-default-admin-password>
    ```
 
-7. Boot & Health Verification:
+7. Boot & Health Verification (Synchronous):
    - Run `ldm run` inside the current directory to launch the containers and boot Liferay.
-   - Once the boot process is complete, verify that the Liferay instance is healthy and accessible at `<LIFERAY_HOST>`.
+   - **CRITICAL:** You MUST run this command synchronously (set `is_background = false` in your `run_shell_command` tool call). Do NOT background the process or use background execution constructs. Wait patiently for the command to finish executing completely (which takes 2-5 minutes as LDM blocks until Liferay's health checks pass) before proceeding.
+   - Once LDM completes and exits successfully, verify that the Liferay instance is healthy and accessible at `<LIFERAY_HOST>`.
 
 8. Agent Admin Account Provisioning & MCP Registration (Automated):
    - Create a second administrator account specifically for AI Agent operations:
