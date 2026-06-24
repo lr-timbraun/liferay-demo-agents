@@ -56,10 +56,11 @@ Please execute the Liferay Sales Engineering Activation Protocol (Converting an 
 
 7. Configuration: Create or update the project's local `.env` file with the extracted `LIFERAY_HOST`, and the automatically resolved default `LIFERAY_ADMIN_EMAIL_ADDRESS=<resolved-admin-email>` and `LIFERAY_ADMIN_PASSWORD=<resolved-admin-password>`.
 
-8. Boot & Health Verification (Synchronous):
-   - Run `ldm run` inside the current directory to launch the containers and boot Liferay.
-   - **CRITICAL:** You MUST run this command synchronously (set `is_background = false` in your `run_shell_command` tool call). Do NOT background the process or use background execution constructs. Wait patiently for the command to finish executing completely (which takes 2-5 minutes as LDM blocks until Liferay's health checks pass) before proceeding.
-   - Once LDM completes and exits successfully, verify that the Liferay instance is healthy and accessible at `<LIFERAY_HOST>`.
+8. Active Container Check, Boot & Health Verification:
+   - First, check if the project containers are already running by executing `ldm status` or checking if the `<LIFERAY_HOST>` URL is already responsive and healthy.
+   - **Conditional Boot:** If and only if the containers are NOT already running or `<LIFERAY_HOST>` is inaccessible, run `ldm run` synchronously inside the current directory to boot the stack.
+     * **CRITICAL:** When booting, you MUST run `ldm run` synchronously (set `is_background = false` in your `run_shell_command` tool call). Do NOT background the process or use background execution constructs. Wait patiently for the command to finish completely (which takes 2-5 minutes) before proceeding.
+   - Once LDM is active (either because boot was skipped as already active, or because it booted successfully), verify that the Liferay instance is healthy and accessible at `<LIFERAY_HOST>`.
 
 9. Agent Admin Account Provisioning & MCP Registration (Automated):
    - Create a second administrator account specifically for AI Agent operations:
