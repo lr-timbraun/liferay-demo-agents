@@ -122,7 +122,7 @@ Once the sub-agents have completed their isolated tasks, the Orchestrator resume
 - **No External Research:** **NEVER** use Google Search or external web search tools to research technical solutions or "how-to" guidance. If you cannot find a solution in the reference guides or your internal knowledge, you MUST stop and ask the user for help.
 - **Visual Impact:** Every UI component must be "Boardroom Ready." Use Lexicon/Clay for consistency, but don't hesitate to use custom CSS/animations to create a premium feel.
 - **Platform:** Target the **latest Liferay DXP Quarterly Release** hosted locally via LDM.
-  - **Live URL:** The instance URL is always read dynamically from `LIFERAY_HOST` in `.env` (defaulting to `http://localhost:8080`).
+  - **Live URL:** The instance URL is always read dynamically from `LIFERAY_HOST` in `.env` (defaulting to `https://localhost:8443`).
 - **Architecture:** Choose the best tool for the specific use case and demo narrative.
   1. Client Extensions first. 2. UI Fragments for layout. 3. Objects for data.
   4. **Forbidden:** NEVER create or use **OSGi Modules**.

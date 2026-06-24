@@ -171,17 +171,22 @@ def main():
     if args.mode == 'init':
         host = args.host
         if not host:
-            host = "https://localhost:8080"
+            print("Error: --host parameter is required for init mode.")
+            sys.exit(1)
             
-        # Ensure a clean protocol is prepended
-        if not host.startswith('http://') and not host.startswith('https://'):
-            host = "https://" + host
-            
-        # LDM Traefik forces HTTPS on all local proxy domains (.demo and localhost ports)
-        if host.startswith('http://') and ('.demo' in host or 'localhost' in host):
+        # Ensure it always starts with https:// (No HTTP allowed, HTTPS by default)
+        if host.startswith('http://'):
             host = host.replace('http://', 'https://')
+        elif not host.startswith('https://'):
+            host = "https://" + host
     else: # activate
         host = get_meta_url()
+        
+        # Ensure activate mode URL is also upgraded/resolved with https:// by default
+        if host.startswith('http://'):
+            host = host.replace('http://', 'https://')
+        elif not host.startswith('https://'):
+            host = "https://" + host
         
     # 2. Enable LPD-63311 MCP Server Feature Flag
     enable_mcp_flag()

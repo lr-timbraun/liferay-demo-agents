@@ -63,7 +63,7 @@ def make_request(url, payload=None, method='GET', auth_header=None):
 
 def main():
     parser = argparse.ArgumentParser(description="Provision a dedicated Liferay administrator account for AI Agent use.")
-    parser.add_argument('--host', help="Liferay host URL (e.g. http://localhost:8080)")
+    parser.add_argument('--host', help="Liferay host URL (e.g. https://localhost:8443)")
     parser.add_argument('--default-email', required=True, help="Default administrator email address")
     parser.add_argument('--default-password', required=True, help="Default administrator password")
     parser.add_argument('--agent-email', default="shirley.temple@liferay.com", help="AI Agent admin email address")
@@ -82,7 +82,14 @@ def main():
                         host = line.strip().split('=', 1)[1].strip()
                         break
         if not host:
-            host = "http://localhost:8080"
+            print("Error: LIFERAY_HOST is not defined in .env and no --host was provided.")
+            sys.exit(1)
+            
+    # Always ensure it is https:// (No HTTP allowed, HTTPS by default)
+    if host.startswith('http://'):
+        host = host.replace('http://', 'https://')
+    elif not host.startswith('https://'):
+        host = "https://" + host
             
     host = host.rstrip('/')
     default_email = args.default_email
