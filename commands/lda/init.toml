@@ -76,8 +76,30 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
      * Password: [Generate a secure password]
      * First Name: `Shirley`
      * Last Name: `Temple`
-     * Screen Name: `shirley`
-   - Provision this user by making a direct Headless REST API call to Liferay (authenticating using Basic Auth with the default admin email and password resolved in Step 4) and assign them the "Administrator" role.
+     * Screen Name/Alternate Name: `shirley`
+   - Provision this user by executing standard Headless Admin User REST API calls against the Liferay instance (authenticating via Basic Auth with the default admin credentials resolved in Step 4):
+     * **Step A: Create User Account:**
+       - **Endpoint:** `POST <LIFERAY_HOST>/o/headless-admin-user/v1.0/user-accounts`
+       - **Headers:** `Content-Type: application/json`
+       - **Payload:**
+         ```json
+         {
+           "alternateName": "shirley",
+           "emailAddress": "shirley.temple@liferay.com",
+           "familyName": "Temple",
+           "givenName": "Shirley",
+           "password": "<generated-password>"
+         }
+         ```
+       - **Action:** Extract the newly created user's `"id"` from the response JSON (e.g., `44554`). If a conflict arises (status code 409), retrieve the existing user ID by searching `<LIFERAY_HOST>/o/headless-admin-user/v1.0/user-accounts?search=shirley`.
+     * **Step B: Resolve Administrator Role ID:**
+       - **Endpoint:** `GET <LIFERAY_HOST>/o/headless-admin-user/v1.0/roles?search=Administrator`
+       - **Action:** Extract the `"id"` of the role where `"name"` is `"Administrator"` (typically `20103`).
+     * **Step C: Associate Role with User:**
+       - **Endpoint:** `POST <LIFERAY_HOST>/o/headless-admin-user/v1.0/roles/{roleId}/association/user-account/{userAccountId}`
+       - **Headers:** `Content-Type: application/json`
+       - **Payload:** Empty body / `b""`
+       - **Response:** Expect `204 No Content` on success.
    - **MCP Server Registration:** Once the account is created, Base64-encode the string `shirley.temple@liferay.com:<generated_password>`.
    - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command:
      `gemini mcp add -s project liferay npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
