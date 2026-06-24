@@ -30,7 +30,8 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
      * Note on host-name: Derive the clean local domain from the Local URL provided by the user (e.g., `321test.demo` if URL is `http://321test.demo`). This is critical to configure Traefik host routing and prevent 404 errors.
      * Note on non-interactivity: You MUST pass the `-y` / `--non-interactive` flag so that LDM initializes headlessly.
    - Run Blade Workspace initialization: `blade init -v <version-tag> liferay` directly inside the current directory to bootstrap a standard Liferay Workspace in a `./liferay/` subdirectory.
-   - **Unified Workspace Scaffolding Script:** Immediately after LDM and Blade initialization, run the unified python scaffolding script to automatically verify portal-ext properties, configure Liferay MCP Server activation flags, create specs folders, standard `DEMO_PLAN.md` template, setup `.gitignore` exclusions (including `.env` exclusions), and generate the pre-boot `.env` file:
+   - **Autonomic Script Injection:** To ensure the orchestration helper scripts are present in this fresh directory, find the active path of the `liferay-demo-agents` extension (by reading your system context or running `gemini extensions list`). Copy the entire `scripts/` directory from that path to `./scripts/` in your current project directory using a shell copy command (e.g., PowerShell `Copy-Item -Recurse -Force <extension-path>/scripts ./scripts` or UNIX `cp -r`).
+   - **Unified Workspace Scaffolding Script:** Immediately after copying, run the unified python scaffolding script to automatically verify portal-ext properties, configure Liferay MCP Server activation flags, create specs folders, standard `DEMO_PLAN.md` template, setup `.gitignore` exclusions (including `.env` exclusions), and generate the pre-boot `.env` file:
      `python scripts/scaffold-workspace.py --mode init --host <user-provided-url>`
 
 4. Optional GitHub Repository Provisioning:
@@ -46,15 +47,15 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
 5. Boot & Health Verification (Synchronous):
    - Run `ldm run` inside the current directory to launch the containers and boot Liferay.
    - **CRITICAL:** You MUST run this command synchronously (set `is_background = false` in your `run_shell_command` tool call). Do NOT background the process or use background execution constructs. Wait patiently for the command to finish executing completely (which takes 2-5 minutes as LDM blocks until Liferay's health checks pass) before proceeding.
-   - Once LDM completes and exits successfully, verify that the Liferay instance is healthy and accessible at `<LIFERAY_HOST>`.
+   - Once LDM completes and exits successfully, verify that Liferay is accessible at the configured URL.
 
 6. Agent Admin Account Provisioning & MCP Registration (Automated Helper):
    - Run the automated Python provisioning helper script directly in the current directory:
      `python scripts/provision-agent-admin.py --default-email <resolved-default-admin-email> --default-password <resolved-default-admin-password>`
      * *Notes:* The resolved default email and password can be read directly from the newly generated local `.env` file (which contains the defaults resolved by the scaffolding script).
    - **MCP Server Registration:** Once the Python helper completes successfully, Base64-encode the string `shirley.temple@liferay.com:<shirley-password>` (where password is read from the updated `.env` file).
-   - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command:
-     `gemini mcp add -s project liferay npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
+   - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command with Node SSL reject disabled to bypass local self-signed certificate errors:
+     `gemini mcp add -s project liferay --env NODE_TLS_REJECT_UNAUTHORIZED=0 npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
    - Verify that the newly registered Liferay MCP Server connects successfully and its tools are active by reloading and checking the MCP list (`gemini mcp list` or `/mcp reload`).
 
 7. Plan: Transition directly into Centralized Planning (Phase 1) to begin demo building.

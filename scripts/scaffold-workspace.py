@@ -3,6 +3,13 @@ import os
 import sys
 import json
 import argparse
+import ssl
+
+# Automatically bypass self-signed SSL verification checks for local LDM Traefik proxy domains
+try:
+    ssl._create_default_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
 
 def get_meta_url():
     """Reads `./meta` to parse and reconstruct the LDM project's LIFERAY_HOST URL."""
@@ -171,7 +178,15 @@ def main():
     if args.mode == 'init':
         host = args.host
         if not host:
-            host = "http://localhost:8080"
+            host = "https://localhost:8080"
+            
+        # Ensure a clean protocol is prepended
+        if not host.startswith('http://') and not host.startswith('https://'):
+            host = "https://" + host
+            
+        # LDM Traefik forces HTTPS on all local proxy domains (.demo and localhost ports)
+        if host.startswith('http://') and ('.demo' in host or 'localhost' in host):
+            host = host.replace('http://', 'https://')
     else: # activate
         host = get_meta_url()
         
