@@ -1,4 +1,2 @@
-# Liferay Workspace Defaults
-build/
-node_modules/
-*.liferay.bundle.zip
+# Completely omit Feedback from testing
+test-projects/
