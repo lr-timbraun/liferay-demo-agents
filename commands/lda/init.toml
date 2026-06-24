@@ -24,34 +24,18 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
        - **Repo Path:** A text input asking for the organization/repo path, defaulting exactly to `{github_username}/{project-name}` (e.g., `github-username/test-demo`).
    - **CRITICAL TAG RESOLUTION:** Resolve and translate any choice selected to the **exact raw version tag** (e.g. `dxp-2026.q2.4` or `dxp-2026.q1.9-lts`). Under no circumstances should the literal words "latest" or "lts" (or labels containing descriptive text like "Latest (dxp-2026.q2.4)") be passed as the `<version-tag>` to Blade or LDM.
 
-3. Scaffolding:
+3. Scaffolding (In-Place & Automated):
    - Run in-place LDM initialization: `ldm init . --tag <version-tag> --host-name <clean-local-domain> -y`
      * Note on directory: You MUST pass `.` as the target directory to initialize in-place and prevent creating a nested folder.
      * Note on host-name: Derive the clean local domain from the Local URL provided by the user (e.g., `321test.demo` if URL is `http://321test.demo`). This is critical to configure Traefik host routing and prevent 404 errors.
-     * Note on non-interactivity: You MUST pass the `-y` / `--non-interactive` flag so that it boots completely headless in the background without prompting for inputs.
+     * Note on non-interactivity: You MUST pass the `-y` / `--non-interactive` flag so that LDM initializes headlessly.
    - Run Blade Workspace initialization: `blade init -v <version-tag> liferay` directly inside the current directory to bootstrap a standard Liferay Workspace in a `./liferay/` subdirectory.
+   - **Unified Workspace Scaffolding Script:** Immediately after LDM and Blade initialization, run the unified python scaffolding script to automatically verify portal-ext properties, configure Liferay MCP Server activation flags, create specs folders, standard `DEMO_PLAN.md` template, setup `.gitignore` exclusions (including `.env` exclusions), and generate the pre-boot `.env` file:
+     `python scripts/scaffold-workspace.py --mode init --host <user-provided-url>`
 
-4. Admin Credential Resolution & MCP Activation (Automated):
-   - Immediately after LDM initialization, check the newly created `./files/portal-ext.properties` file.
-   - Parse and extract the values for `default.admin.email.address.prefix` and `default.admin.password`.
-   - If `default.admin.email.address.prefix` is not defined or is empty, fallback to "test".
-   - If `default.admin.password` is not defined or is empty, fallback to "test".
-   - Construct the administrator email by combining the prefix with the "@liferay.com" suffix (resulting in "{prefix}@liferay.com").
-   - **MCP Server Activation:** Verify if `./files/portal-ext.properties` contains the setting `feature.flag.LPD-63311=true`. If missing or set to `false`, add or update it to `feature.flag.LPD-63311=true` to enable Liferay's Model Context Protocol (MCP) Server.
-
-5. Optional GitHub Repository Provisioning:
-   - If the user chose to create a GitHub repository, you MUST track *only* the `./liferay/` workspace subdirectory and keep it clean of IDE/AI configuration noise:
+4. Optional GitHub Repository Provisioning:
+   - If the user chose to create a GitHub repository, you MUST track *only* the `./liferay/` workspace subdirectory (all AI/IDE config directories and `.env` have already been securely excluded in `./liferay/.gitignore` by the scaffolding script):
      * Change directories into the `./liferay/` folder.
-     * **Exclusions:** Append the following AI/IDE folders to the `./liferay/.gitignore` file before making your initial commit to prevent tracking local IDE rules and agent files:
-       ```gitignore
-       # AI & Agent Workspace Configurations
-       .claude/
-       .cursor/
-       .gemini/
-       .github/
-       .windsurf/
-       .workspace-rules/
-       ```
      * Initialize Git locally: `git init`.
      * Add and commit the initial workspace: `git add .` and `git commit -m "Initial commit of Liferay Workspace"`.
      * Create the remote GitHub repository using GitHub CLI:
@@ -59,28 +43,21 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
      * Ensure default branch is pushed (e.g., `git push -u origin master` or `git push -u origin main`).
      * Return to the main project directory.
 
-6. Configuration: Write the project-specific `.env` file directly in the current working directory containing:
-   ```env
-   LIFERAY_HOST=<user-provided-url>
-   LIFERAY_ADMIN_EMAIL_ADDRESS=<resolved-default-admin-email>
-   LIFERAY_ADMIN_PASSWORD=<resolved-default-admin-password>
-   ```
-
-7. Boot & Health Verification (Synchronous):
+5. Boot & Health Verification (Synchronous):
    - Run `ldm run` inside the current directory to launch the containers and boot Liferay.
    - **CRITICAL:** You MUST run this command synchronously (set `is_background = false` in your `run_shell_command` tool call). Do NOT background the process or use background execution constructs. Wait patiently for the command to finish executing completely (which takes 2-5 minutes as LDM blocks until Liferay's health checks pass) before proceeding.
    - Once LDM completes and exits successfully, verify that the Liferay instance is healthy and accessible at `<LIFERAY_HOST>`.
 
-8. Agent Admin Account Provisioning & MCP Registration (Automated Helper):
+6. Agent Admin Account Provisioning & MCP Registration (Automated Helper):
    - Run the automated Python provisioning helper script directly in the current directory:
      `python scripts/provision-agent-admin.py --default-email <resolved-default-admin-email> --default-password <resolved-default-admin-password>`
-     * *Notes:* This script automatically connects to Liferay, creates the dedicated `shirley.temple@liferay.com` account with the Administrator role, verifies it, and overwrites the local `.env` file with her secure agent credentials.
+     * *Notes:* The resolved default email and password can be read directly from the newly generated local `.env` file (which contains the defaults resolved by the scaffolding script).
    - **MCP Server Registration:** Once the Python helper completes successfully, Base64-encode the string `shirley.temple@liferay.com:<shirley-password>` (where password is read from the updated `.env` file).
    - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command:
      `gemini mcp add -s project liferay npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
    - Verify that the newly registered Liferay MCP Server connects successfully and its tools are active by reloading and checking the MCP list (`gemini mcp list` or `/mcp reload`).
 
-9. Plan: Transition directly into Centralized Planning (Phase 1) to begin demo building.
+7. Plan: Transition directly into Centralized Planning (Phase 1) to begin demo building.
 
 Arguments: {{args}}
 """
