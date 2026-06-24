@@ -37,7 +37,7 @@ def get_credentials():
     # Read Liferay local/remote host from .env, fallback to standard LDM localhost
     host = creds.get("LIFERAY_HOST")
     if not host:
-        host = "https://localhost:8443"
+        host = "https://localhost"
     
     if not email or not password:
         print(f"Error: Credentials missing in {env_path}")

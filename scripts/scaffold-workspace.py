@@ -12,7 +12,7 @@ def get_meta_url():
         meta_path = os.path.join(os.getcwd(), 'meta')
         
     if not os.path.exists(meta_path):
-        return "http://localhost:8080"
+        return "https://localhost"
         
     meta = {}
     with open(meta_path, 'r', encoding='utf-8') as f:

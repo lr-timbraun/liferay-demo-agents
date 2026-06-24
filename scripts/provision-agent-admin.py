@@ -63,7 +63,7 @@ def make_request(url, payload=None, method='GET', auth_header=None):
 
 def main():
     parser = argparse.ArgumentParser(description="Provision a dedicated Liferay administrator account for AI Agent use.")
-    parser.add_argument('--host', help="Liferay host URL (e.g. https://localhost:8443)")
+    parser.add_argument('--host', help="Liferay host URL (e.g. https://localhost)")
     parser.add_argument('--default-email', required=True, help="Default administrator email address")
     parser.add_argument('--default-password', required=True, help="Default administrator password")
     parser.add_argument('--agent-email', default="shirley.temple@liferay.com", help="AI Agent admin email address")

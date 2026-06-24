@@ -11,7 +11,7 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
 2. Version Retrieval & Sequential User Prompts (Respecting Tool Limits):
    - Run `blade init --list` to fetch the available Liferay release tags (e.g., `dxp-2026.q2.4`, `dxp-2026.q1.9-lts`). Identify which corresponds to the latest Quarterly release and which to the LTS (newest Q1 release).
    - **First Prompt (Core Setup):** Call `ask_user` first with the following questions:
-     * **Local URL:** The preferred local URL for the Liferay instance (e.g., `http://localhost:8080` or `http://myproject.local`).
+     * **Local URL:** The preferred local URL for the Liferay instance (e.g., `https://localhost` or `https://myproject.local`).
      * **Liferay Version:** Present a multiple-choice list containing:
        - Latest (display the actual version tag found in step 2, e.g., `Latest (dxp-2026.q2.4)`)
        - LTS (display the actual version tag found in step 2, e.g., `LTS (dxp-2026.q1.9-lts)`)
@@ -27,7 +27,7 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
 3. Scaffolding (In-Place & Automated):
    - Run in-place LDM initialization: `ldm init . --tag <version-tag> --host-name <clean-local-domain> -y`
      * Note on directory: You MUST pass `.` as the target directory to initialize in-place and prevent creating a nested folder.
-     * Note on host-name: Derive the clean local domain from the Local URL provided by the user (e.g., `321test.demo` if URL is `http://321test.demo`). This is critical to configure Traefik host routing and prevent 404 errors.
+     * Note on host-name: Derive the clean local domain from the Local URL provided by the user (e.g., `321test.demo` if URL is `https://321test.demo`). This is critical to configure Traefik host routing and prevent 404 errors.
      * Note on non-interactivity: You MUST pass the `-y` / `--non-interactive` flag so that LDM initializes headlessly.
    - Run Blade Workspace initialization: `blade init -v <version-tag> liferay` directly inside the current directory to bootstrap a standard Liferay Workspace in a `./liferay/` subdirectory.
    - **Agent-Native Script Scaffolding (Automated):** To ensure the orchestration helper scripts are present in this fresh directory, use your native `read_file` tool to read `scaffold-workspace.py` and `provision-agent-admin.py` from the `liferay-demo-agents` extension's `scripts/` directory (located under your active loaded context). Then write them directly to `./scripts/scaffold-workspace.py` and `./scripts/provision-agent-admin.py` in the target project directory using your native `write_file` tool. Do NOT run native shell copy commands (like Copy-Item, cp, or shutil) as they are platform-dependent and prone to permissions issues.
