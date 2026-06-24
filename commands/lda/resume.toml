@@ -14,18 +14,19 @@ Please execute the Liferay Sales Engineering Resume Protocol for the current pro
    - Verify if it contains the setting `feature.flag.LPD-63311=true`. If missing or set to `false`, add or update it to `feature.flag.LPD-63311=true` to ensure the Liferay MCP Server is activated.
 
 3. Boot Stack:
-   - Run `ldm run -y` directly inside the current directory to boot up the containers completely headlessly and non-interactively without prompt selector lists.
+   - Run `ldm run` inside the current directory to boot the container stack.
 
-4. Watch Logs:
-   - Stream and watch the container logs in real-time using LDM's log follow command (`ldm logs -f` or launching run with follow `ldm run -f`) so that you and the user can see Liferay's Tomcat startup logging in real-time.
+4. MCP Server Registration & Connection:
+   - Once the boot process is complete and Liferay is active, Base64-encode the active agent credentials (`LIFERAY_ADMIN_EMAIL_ADDRESS:LIFERAY_ADMIN_PASSWORD`) read from the local `.env` file (corresponding to Shirley Temple's account).
+   - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command if it is not already configured:
+     `gemini mcp add -s project liferay npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
+   - Verify that the registered Liferay MCP Server connects successfully and its tools are active by reloading and checking the MCP list (`gemini mcp list` or `/mcp reload`).
 
 5. Status & MCP Verification Check:
-   - Once Liferay Tomcat is running and healthy (verified via Tomcat "Server startup" marker or connection test):
-     * Verify that the Liferay MCP Server is running and the credentials work by querying the endpoint `<LIFERAY_HOST>/o/mcp` using Basic Authentication with the credentials from the local `.env` file (which should correspond to Shirley Temple's agent account).
-     * Do NOT start or reset the demo planning phase by default (planning may have already concluded).
-     * Inspect the workspace to check the status of the current system (e.g., read `DEMO_PLAN.md` if it exists, check for specifications in `specs/`, and scan files inside `liferay/`).
-     * Summarize the current state of development clearly (e.g., what has already been planned, built, or deployed, and what milestones are remaining).
-     * Present this concise status report to the user and suggest the next logical action (e.g., resuming a specific sub-agent implementation task, validating deployed fragments, etc.), waiting for their direction on how they want to proceed.
+   - Do NOT start or reset the demo planning phase by default (planning may have already concluded).
+   - Inspect the workspace to check the status of the current system (e.g., read `DEMO_PLAN.md` if it exists, check for specifications in `specs/`, and scan files inside `liferay/`).
+   - Summarize the current state of development clearly (e.g., what has already been planned, built, or deployed, and what milestones are remaining).
+   - Present this concise status report to the user and suggest the next logical action (e.g., resuming a specific sub-agent implementation task, validating deployed fragments, etc.), waiting for their direction on how they want to proceed.
 
 Arguments: {{args}}
 """

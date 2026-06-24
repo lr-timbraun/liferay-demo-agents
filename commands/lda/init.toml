@@ -66,21 +66,23 @@ Please execute the Liferay Sales Engineering Initialization Protocol for a fresh
    LIFERAY_ADMIN_PASSWORD=<resolved-default-admin-password>
    ```
 
-7. Boot & MCP Verification:
-   - Run `ldm run -y` directly inside the current directory to launch the local containers completely non-interactively without selector lists or prompts.
-   - Once Tomcat boot is complete (verified via Tomcat "Server startup" marker or connection test), verify that the Liferay MCP Server is running and the credentials work by querying the endpoint `<LIFERAY_HOST>/o/mcp` using Basic Authentication (with the resolved default admin email and password).
+7. Boot & Health Verification:
+   - Run `ldm run` inside the current directory to launch the containers and boot Liferay.
+   - Once the boot process is complete, verify that the Liferay instance is healthy and accessible at `<LIFERAY_HOST>`.
 
-8. Agent Admin Account Provisioning (Automated):
-   - Immediately after verifying the MCP Server is active, create a second administrator account specifically for AI Agent operations.
-   - Account details:
+8. Agent Admin Account Provisioning & MCP Registration (Automated):
+   - Create a second administrator account specifically for AI Agent operations:
      * Email: `shirley.temple@liferay.com`
      * Password: [Generate a secure password]
      * First Name: `Shirley`
      * Last Name: `Temple`
      * Screen Name: `shirley`
-   - Provision this user using Liferay's Headless Admin User REST APIs or MCP tools (authenticating as the default administrator) and assign them the "Administrator" role.
-   - Verify the newly created agent account by querying the MCP Server endpoint `<LIFERAY_HOST>/o/mcp` using Basic Authentication with `shirley.temple@liferay.com` and her generated password.
-   - Once successfully verified, overwrite the project's local `.env` file, saving `shirley.temple@liferay.com` and her generated password as `LIFERAY_ADMIN_EMAIL_ADDRESS` and `LIFERAY_ADMIN_PASSWORD` respectively (retaining the LIFERAY_HOST URL).
+   - Provision this user by making a direct Headless REST API call to Liferay (authenticating using Basic Auth with the default admin email and password resolved in Step 4) and assign them the "Administrator" role.
+   - **MCP Server Registration:** Once the account is created, Base64-encode the string `shirley.temple@liferay.com:<generated_password>`.
+   - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command:
+     `gemini mcp add -s project liferay npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
+   - Verify that the newly registered Liferay MCP Server connects successfully and its tools are active by reloading and checking the MCP list (`gemini mcp list` or `/mcp reload`).
+   - Overwrite the project's local `.env` file, saving `shirley.temple@liferay.com` and her generated password as `LIFERAY_ADMIN_EMAIL_ADDRESS` and `LIFERAY_ADMIN_PASSWORD` respectively (retaining the LIFERAY_HOST URL).
 
 9. Plan: Transition directly into Centralized Planning (Phase 1) to begin demo building.
 
