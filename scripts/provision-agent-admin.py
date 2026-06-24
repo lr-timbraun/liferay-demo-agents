@@ -8,13 +8,6 @@ import secrets
 import string
 import urllib.request
 import urllib.error
-import ssl
-
-# Automatically bypass self-signed SSL verification checks for local LDM Traefik proxy domains
-try:
-    ssl._create_default_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
 
 def get_env_path():
     """Finds the .env file by searching upwards from the current directory."""

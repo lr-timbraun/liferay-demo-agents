@@ -20,8 +20,8 @@ Please execute the Liferay Sales Engineering Resume Protocol for the current pro
 
 4. MCP Server Registration & Connection:
    - Once the boot process is complete and Liferay is active, Base64-encode the active agent credentials (`LIFERAY_ADMIN_EMAIL_ADDRESS:LIFERAY_ADMIN_PASSWORD`) read from the local `.env` file (corresponding to Shirley Temple's account).
-   - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command if it is not already configured, using Node SSL reject disabled to bypass local self-signed certificate errors:
-     `gemini mcp add -s project liferay --env NODE_TLS_REJECT_UNAUTHORIZED=0 npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
+   - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command if it is not already configured:
+     `gemini mcp add -s project liferay npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
    - Verify that the registered Liferay MCP Server connects successfully and its tools are active by reloading and checking the MCP list (`gemini mcp list` or `/mcp reload`).
 
 5. Status & MCP Verification Check:
