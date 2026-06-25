@@ -72,7 +72,7 @@ Once ALL specs are written and approved, you MUST delegate the implementation to
 Once the sub-agents have completed their isolated tasks, the Orchestrator resumes control to finalize the build and guide the user through local deployment:
 
 1.  **Local Build & Package:**
-    - **Client Extensions:** Run `ldm deploy` from the project directory to compile, synchronize, and hot-deploy built client extensions and configurations directly to the running container.
+    - **Client Extensions:** Run the automated script `python scripts/deploy-client-extensions.py` from the project directory. This compiles any React elements locally for maximum speed and hot-deploys them directly to LDM.
     - **Fragments:** Use `scripts/package-fragments.py` to package ZIP fragment collections, and then import them directly via the "Page Fragments" Site Builder UI, or drop them in the `deploy/` directory.
     - **Stylebooks:** Confirm the Stylebook ZIP has been generated and is ready to load.
 2.  **Verification:** Confirm the success of each local build step. If a packaging or deploy step fails, delegate the fix back to the relevant sub-agent with the error log.

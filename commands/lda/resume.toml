@@ -26,7 +26,7 @@ Please execute the Liferay Sales Engineering Resume Protocol for the current pro
 
 5. Status & MCP Verification Check:
    - Do NOT start or reset the demo planning phase by default (planning may have already concluded).
-   - Inspect the workspace to check the status of the current system (e.g., read `DEMO_PLAN.md` if it exists, check for specifications in `specs/`, and scan files inside `liferay/`).
+   * Inspect the workspace to check the status of the current system (e.g., read `liferay/specs/DEMO_PLAN.md` if it exists, check for specifications in `liferay/specs/`, and scan files inside `liferay/`).
    - Summarize the current state of development clearly (e.g., what has already been planned, built, or deployed, and what milestones are remaining).
    - Present this concise status report to the user and suggest the next logical action (e.g., resuming a specific sub-agent implementation task, validating deployed fragments, etc.), waiting for their direction on how they want to proceed.
 
