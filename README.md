@@ -9,7 +9,7 @@ It is tailored specifically for building visually stunning, "Boardroom Ready" pr
 ## 🚀 Key Features
 
 *   **Orchestrator/Sub-Agent Workflow:** Separates strategic planning (Phase 1) from granular implementation (Phase 2) and final delivery/validation (Phase 3).
-*   **Specialized Agent Personas:** Dedicated configurations for `site-design`, `fragment`, `object`, and `custom-element` development.
+*   **Specialized Agent Personas:** Dedicated configurations for `site-design`, `fragment`, `object`, and `custom-element` development. Further agents are in development.
 *   **Concurrently Isolated Execution:** Sub-agents are restricted to their assigned directories, enabling multiple agents to run in parallel without file collisions.
 *   **Automated Deployment Scripts:** A suite of local Python scripts that automate compiling, packaging, and hot-deploying Stylebooks, Fragments, and Client Extensions.
 *   **End-to-End Persona Validation:** Mandates the creation of a `liferay/specs/TEST_PLAN.md` which performs visual, interactive, in-session browser testing on the live site.
@@ -126,28 +126,6 @@ The Orchestrator resumes control to deliver and verify the solution:
 3.  **Packages & Imports Stylebooks:** Runs `python scripts/deploy-stylebook.py` to package Stylebook token JSONs into ZIPs and automates their browser-based UI import into Liferay's **target Site** via Playwright.
 4.  **Verifies Total Setup:** Writes and executes Playwright scripts (`frontend-validation` skill) on the live site, capturing in-flow screenshots of key interaction and data states.
 5.  **Generates `tests/TEST_REPORT_<timestamp>.md`:** Delivers a complete validation audit containing descriptions and screenshots of every persona use case.
-
----
-
-## 🎨 Token Mapping & Styling
-
-To ensure fragments and client extensions are completely portable and support Liferay's **Stylebooks**, sub-agents must strictly follow the **`TOKEN_MAPPING_GUIDE.md`** reference.
-*   **Var Mandate:** Always use `var(--token-name)` for CSS rules where a matching Classic theme token is defined.
-*   **No Hardcoding:** Hardcoded hex values, RGB strings, or fixed spacer pixels are strictly forbidden.
-*   **Interactive States:** When customizing components (like buttons), you must also map their hover/active states (e.g., `btn-primary-hover-background-color`) to ensure a seamless visual transformation.
-
----
-
-## 🤖 Local Automation Scripts
-
-This framework provides a suite of local Python helper scripts inside the `scripts/` directory to completely automate setup, credentials, and packaging:
-
-*   **`scripts/env_utils.py`:** Secure credentials utility providing modular, on-demand getters for `LIFERAY_HOST`, `LIFERAY_ADMIN_EMAIL_ADDRESS`, and `LIFERAY_ADMIN_PASSWORD` (reads from local `.env`).
-*   **`scripts/scaffold-workspace.py`:** Automatically configures LDM project metadata, enables MCP server flags in portal properties, scaffolds `specs/` and `input/` directories, and configures `.gitignore` exclusions.
-*   **`scripts/provision-agent-admin.py`:** Automates headless API account provisioning for the dedicated Shirley Temple agent admin user and updates `.env`.
-*   **`scripts/deploy-client-extensions.py`:** Locates, builds, zips, and deploys custom client extensions directly to LDM's hot-deploy path.
-*   **`scripts/deploy-fragments.py`:** Packages custom fragment collections and uses headless Playwright-RPA browser automation to log in and import them globally.
-*   **`scripts/deploy-stylebook.py`:** Packages stylebook token JSONs into Liferay-compliant ZIPs and uses headless Playwright-RPA browser automation to log in and import them to the target Site.
 
 ---
 
