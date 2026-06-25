@@ -1,6 +1,6 @@
 {
   "name": "liferay-demo-agents",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Liferay Demo Builder & Orchestrator with Blade CLI and Liferay Docker Manager (LDM).",
   "migratedTo": "https://github.com/lr-timbraun/liferay-demo-agents",
   "contextFileName": "GEMINI.md",
