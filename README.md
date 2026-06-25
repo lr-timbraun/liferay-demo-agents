@@ -26,14 +26,7 @@ Before starting, ensure you have the following installed and configured locally:
 *   **Python (3.10+):** Available in your shell PATH (`python --version`).
 *   **Playwright:** Python library installed (`pip install playwright` followed by `playwright install`).
 
-### 2. Auto-Initialization
-The framework provides an automated workspace scaffolding utility. When starting a fresh project, running `/lda:init` will:
-1.  Scaffold a new LDM container stack and Blade Workspace.
-2.  Run `scaffold-workspace.py` to create specs directories, standard `DEMO_PLAN.md` templates, and configure `.gitignore` exclusions.
-3.  Automatically extract default administrator credentials from LDM's properties and generate your local `.env` configuration.
-4.  Run `provision-agent-admin.py` to programmatically create a dedicated AI Agent administrator account (`shirley.temple@liferay.com`) via headless REST APIs and save her credentials in your local `.env`.
-
-### 3. Enable Required Feature Flags
+### 2. Enable Required Feature Flags
 To use all of the advanced features of Liferay Demo Agents (such as the MCP Server, Page Management REST API, and New CMS), you must enable Liferay's developer feature flags.
 
 Add the following to your local LDM project's `/common/portal-ext.properties` file:
@@ -47,6 +40,13 @@ feature.flag.LPD-17564=true
 #LPD-35443 enables the Page Management API
 feature.flag.LPD-35443=true
 ```
+
+### 3. Auto-Initialization
+The framework provides an automated workspace scaffolding utility. When starting a fresh project, running `/lda:init` will:
+1.  Scaffold a new LDM container stack and Blade Workspace.
+2.  Run `scaffold-workspace.py` to create specs directories, standard `DEMO_PLAN.md` templates, and configure `.gitignore` exclusions.
+3.  Automatically extract default administrator credentials from LDM's properties and generate your local `.env` configuration.
+4.  Run `provision-agent-admin.py` to programmatically create a dedicated AI Agent administrator account (`shirley.temple@liferay.com`) via headless REST APIs and save her credentials in your local `.env`.
 
 ---
 
