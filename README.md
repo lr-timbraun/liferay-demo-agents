@@ -1,6 +1,6 @@
 # Liferay Demo Agent Framework
 
-This repository houses the configuration, specialized agent personas, custom skills, and local automation scripts designed for **Gemini CLI** (and other compatible AI tools) to automate the development, packaging, and validation of Liferay DXP demonstrations.
+This repository houses the configuration, specialized agent personas, custom skills, and local automation scripts designed for **Gemini CLI** (and other compatible AI tools) to automate the development, packaging, and validation of Liferay DXP demonstrations locally using **Liferay Docker Manager (LDM)** and **Blade CLI**.
 
 It is tailored specifically for **Liferay Sales Engineers** to build visually stunning, "Boardroom Ready" proof-of-concepts and demos with speed, consistency, and structural integrity.
 
@@ -11,8 +11,8 @@ It is tailored specifically for **Liferay Sales Engineers** to build visually st
 *   **Orchestrator/Sub-Agent Workflow:** Separates strategic planning (Phase 1) from granular implementation (Phase 2) and final delivery/validation (Phase 3).
 *   **Specialized Agent Personas:** Dedicated configurations for `site-design`, `fragment`, `object`, and `custom-element` development.
 *   **Concurrently Isolated Execution:** Sub-agents are restricted to their assigned directories, enabling multiple agents to run in parallel without file collisions.
-*   **End-to-End Persona Validation:** Mandates the creation of a `specs/TEST_PLAN.md` which performs visual, interactive, in-session browser testing on the live site.
-*   **Local Python Automation:** Pre-built scripts for zipping stylebooks, packaging fragment collections, and programmatically publishing custom Liferay Objects.
+*   **Automated Deployment Scripts:** A suite of local Python scripts that automate compiling, packaging, and hot-deploying Stylebooks, Fragments, and Client Extensions.
+*   **End-to-End Persona Validation:** Mandates the creation of a `liferay/specs/TEST_PLAN.md` which performs visual, interactive, in-session browser testing on the live site.
 
 ---
 
@@ -20,19 +20,18 @@ It is tailored specifically for **Liferay Sales Engineers** to build visually st
 
 ### 1. Verification
 Before starting, ensure you have the following installed and configured locally:
-*   **GitHub CLI (`gh`):** Logged in (`gh auth status`) and configured for standard Git operations (`gh auth setup-git`).
-*   **Python (3.10+):** Installed and available in your shell PATH (`python --version`).
+*   **Blade CLI (8.0.1+):** Liferay Workspace tooling.
+*   **Liferay Docker Manager (LDM):** Local container orchestrator.
+*   **GitHub CLI (`gh`):** Logged in (`gh auth status`) and configured for Git operations.
+*   **Python (3.10+):** Available in your shell PATH (`python --version`).
 *   **Playwright:** Python library installed (`pip install playwright` followed by `playwright install`).
 
-### 2. Configure Liferay Admin Credentials
-The framework includes an automated credential utility (`scripts/liferay_utils.py`) that searches upwards for a local `.env` file. 
-
-Create a `.env` file in the project root containing your Liferay user credentials (a dedicated AI account like `ai-agent@liferay.com` is highly recommended for audit trail clarity):
-
-```text
-LIFERAY_ADMIN_EMAIL_ADDRESS=ai-agent@liferay.com
-LIFERAY_ADMIN_PASSWORD=your-secure-password
-```
+### 2. Auto-Initialization
+The framework provides an automated workspace scaffolding utility. When starting a fresh project, running `/lda:init` will:
+1.  Scaffold a new LDM container stack and Blade Workspace.
+2.  Run `scaffold-workspace.py` to create specs directories, standard `DEMO_PLAN.md` templates, and configure `.gitignore` exclusions.
+3.  Automatically extract default administrator credentials from LDM's properties and generate your local `.env` configuration.
+4.  Run `provision-agent-admin.py` to programmatically create a dedicated AI Agent administrator account (`shirley.temple@liferay.com`) via headless REST APIs and save her credentials in your local `.env`.
 
 ---
 
@@ -42,23 +41,24 @@ LIFERAY_ADMIN_PASSWORD=your-secure-password
 The primary agent acts as the solution architect and does NOT write any code:
 1.  **Scrapes Homepage:** Uses the `playwright-scraper` skill to fetch the customer's homepage for style and brand context.
 2.  **Interviews User:** Asks for the prospect's identity, narrative, personas, and key "Wow" moments.
-3.  **Drafts `DEMO_PLAN.md`:** Creates a high-level roadmap covering the full site experience (homepage, global elements, menu, login).
-4.  **Writes Technical Specs (`specs/`):** Defines the strict schemas, CSS tokens, and interface contracts for the sub-agents.
-5.  **Defines `specs/TEST_PLAN.md`:** Outlines the exact frontend validation flows to be executed post-deployment.
+3.  **Drafts `DEMO_PLAN.md`:** Creates a high-level roadmap covering the full site experience (homepage, global elements, menu, login) inside `liferay/specs/DEMO_PLAN.md`.
+4.  **Writes Technical Specs (`liferay/specs/`):** Defines the strict schemas, CSS tokens, and interface contracts for the sub-agents.
+5.  **Defines `liferay/specs/TEST_PLAN.md`:** Outlines the exact frontend validation flows to be executed post-deployment.
 
 ### Phase 2: Independent Execution (Delegation)
 The Orchestrator invokes the `generalist` sub-agent for each independent component, instructing it to adopt a specific persona:
 *   **`site-design-agent`:** Establishes the visual identity (Stylebook JSONs, Global CSS).
 *   **`fragment-agent`:** Builds the layout and form fragments (`index.html`, `index.css`, `index.js`, `configuration.json`).
-*   **`object-agent`:** Creates the Objects and populates them with realistic, industry-specific data.
+*   **`object-agent`:** Creates Liferay Objects and populates them with realistic, industry-specific data.
 *   **`custom-element-agent`:** Implements React-based Custom Element Client Extensions.
 
 ### Phase 3: Build, Validation & Delivery (Orchestrator)
 The Orchestrator resumes control to deliver and verify the solution:
-1.  **Compiles & Packages:** Runs `package-fragments.py` and `package-stylebook.py` to create the ZIP archives. Pushes Client Extension code to GitHub to trigger the Liferay PaaS build.
-2.  **Guides Deployment:** Instructs the user to trigger manual deployment in the PaaS console.
-3.  **Verifies Total Setup:** Upon explicit user request, writes and executes Playwright scripts (`frontend-validation` skill) on the live site, capturing in-flow screenshots of key interaction and data states.
-4.  **Generates `TEST_REPORT_<timestamp>.md`:** Delivers a complete validation audit containing descriptions and screenshots of every persona use case.
+1.  **Compiles & Hot-Deploys Client Extensions:** Runs `python scripts/deploy-client-extensions.py` from the project directory. This compiles any custom frontend extensions locally for maximum speed and hot-deploys them into LDM's mounted directories.
+2.  **Packages & Imports Page Fragments:** Runs `python scripts/deploy-fragments.py` to package fragment collections into ZIPs and automates their browser-based UI import into Liferay's **Global Site** via Playwright.
+3.  **Packages & Imports Stylebooks:** Runs `python scripts/deploy-stylebook.py` to package Stylebook token JSONs into ZIPs and automates their browser-based UI import into Liferay's **target Site** via Playwright.
+4.  **Verifies Total Setup:** Writes and executes Playwright scripts (`frontend-validation` skill) on the live site, capturing in-flow screenshots of key interaction and data states.
+5.  **Generates `tests/TEST_REPORT_<timestamp>.md`:** Delivers a complete validation audit containing descriptions and screenshots of every persona use case.
 
 ---
 
@@ -71,5 +71,18 @@ To ensure fragments and client extensions are completely portable and support Li
 
 ---
 
+## 🤖 Local SE Automation Scripts
+
+This framework provides a suite of local Python helper scripts inside the `scripts/` directory to completely automate setup, credentials, and packaging:
+
+*   **`scripts/env_utils.py`:** Secure credentials utility providing modular, on-demand getters for `LIFERAY_HOST`, `LIFERAY_ADMIN_EMAIL_ADDRESS`, and `LIFERAY_ADMIN_PASSWORD` (reads from local `.env`).
+*   **`scripts/scaffold-workspace.py`:** Automatically configures LDM project metadata, enables MCP server flags in portal properties, scaffolds `specs/` and `input/` directories, and configures `.gitignore` exclusions.
+*   **`scripts/provision-agent-admin.py`:** Automates headless API account provisioning for the dedicated Shirley Temple agent admin user and updates `.env`.
+*   **`scripts/deploy-client-extensions.py`:** Locates, builds, zips, and deploys custom client extensions directly to LDM's hot-deploy path.
+*   **`scripts/deploy-fragments.py`:** Packages custom fragment collections and uses headless Playwright-RPA browser automation to log in and import them globally.
+*   **`scripts/deploy-stylebook.py`:** Packages stylebook token JSONs into Liferay-compliant ZIPs and uses headless Playwright-RPA browser automation to log in and import them to the target Site.
+
+---
+
 ## 📄 License
-This agent framework is intended for Liferay Sales Engineering internal use.
+This agent framework is released under the [MIT License](LICENSE). It is intended for Liferay Sales Engineering internal use.

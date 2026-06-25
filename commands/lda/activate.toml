@@ -1,7 +1,7 @@
 description = "Activate and convert an existing local LDM project directory into a full Liferay Demo Agent (LDA) workspace."
 
 prompt = """
-Please execute the Liferay Sales Engineering Activation Protocol (Converting an existing plain LDM project into a full LDA workspace):
+Please execute the Liferay Demo Agents Activation Protocol (Converting an existing plain LDM project into a full LDA workspace):
 
 1. Perform Step 1: Verify Core Tooling & Check Updates
    - **Blade CLI:** Run `blade version` to get the current version. If the output indicates a newer version is available, you MUST explicitly ask the user for permission (using `ask_user`) before running `blade update`.

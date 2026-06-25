@@ -1,7 +1,7 @@
 description = "Initialize and scaffold a brand new Liferay LDM project and workspace in the current directory."
 
 prompt = """
-Please execute the Liferay Sales Engineering Initialization Protocol for a fresh project in the current directory:
+Please execute the Liferay Demo Agents Initialization Protocol for a fresh project in the current directory:
 
 1. Perform Step 1: Verify Core Tooling & Check Updates
    - **Blade CLI:** Run `blade version` to get the current version. If the output indicates a newer version is available, you MUST explicitly ask the user for permission (using `ask_user`) before running `blade update`.

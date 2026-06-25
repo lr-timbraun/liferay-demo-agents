@@ -1,7 +1,7 @@
 description = "Resume demo development inside an already configured Liferay Demo Agent (LDA) workspace."
 
 prompt = """
-Please execute the Liferay Sales Engineering Resume Protocol for the current project:
+Please execute the Liferay Demo Agents Resume Protocol for the current project:
 
 1. Perform Step 1: Verify Core Tooling & Check Updates
    - **Blade CLI:** Run `blade version` to get the current version. If the output indicates a newer version is available, you MUST explicitly ask the user for permission (using `ask_user`) before running `blade update`.
