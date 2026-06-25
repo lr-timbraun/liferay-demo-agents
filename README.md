@@ -16,36 +16,6 @@ It is tailored specifically for **Liferay Sales Engineers** to build visually st
 
 ---
 
-## 📁 Repository Structure
-
-```text
-.
-├── .gemini/               # Gemini CLI configuration
-│   ├── agents/            # Specialized sub-agent personas (Markdown)
-│   │   ├── site-design-agent.md
-│   │   ├── fragment-agent.md
-│   │   ├── object-agent.md
-│   │   └── custom-element-agent.md
-│   └── skills/            # Specialized AI skills (SKILL.md + references/)
-│       ├── site-design/       # Stylebooks & Global CSS logic
-│       ├── create-fragment/   # UI/Form Fragments & FreeMarker APIs
-│       ├── liferay-objects/   # Object schemas & population
-│       ├── playwright-scraper/# Customer homepage scraping
-│       └── frontend-validation/# Interactive Playwright validation
-├── .gitignore             # Ignores build outputs & keeps .env local
-├── GEMINI.md              # Project-wide instructions, blocking init protocol, & core mandates
-├── REUSABLE_ASSETS.md     # Registry of source repositories for component discovery
-├── .env                   # Local credentials template (ignored by Git)
-└── scripts/               # Local helper & packaging scripts (not committed to demos)
-    ├── liferay_utils.py   # Secure credential & host URL resolver
-    ├── create-object-definition.py # Automates Object creation & publishing
-    ├── package-fragments.py  # Strict ZIP bundler for Fragment collections
-    ├── package-stylebook.py  # Strict ZIP bundler for Stylebooks
-    └── get_dom.py         # Playwright scraper utility
-```
-
----
-
 ## 🛠️ Setup & Prerequisites
 
 ### 1. Verification
