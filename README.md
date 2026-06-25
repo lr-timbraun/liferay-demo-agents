@@ -33,6 +33,21 @@ The framework provides an automated workspace scaffolding utility. When starting
 3.  Automatically extract default administrator credentials from LDM's properties and generate your local `.env` configuration.
 4.  Run `provision-agent-admin.py` to programmatically create a dedicated AI Agent administrator account (`shirley.temple@liferay.com`) via headless REST APIs and save her credentials in your local `.env`.
 
+### 3. Enable Required Feature Flags
+To use all of the advanced features of Liferay Demo Agents (such as the MCP Server, Page Management REST API, and New CMS), you must enable Liferay's developer feature flags.
+
+Add the following to your local LDM project's `/common/portal-ext.properties` file:
+
+```properties
+#LPD-63311 Enables the MCP Server
+feature.flag.LPD-63311=true
+#LPD-34594 and LPD-17564 together enable the new CMS
+feature.flag.LPD-34594=true
+feature.flag.LPD-17564=true
+#LPD-35443 enables the Page Management API
+feature.flag.LPD-35443=true
+```
+
 ---
 
 ## 📥 Installation & Linking
