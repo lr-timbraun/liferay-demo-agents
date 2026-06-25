@@ -110,8 +110,8 @@ def update_gitignore(file_path, exclusions):
         print(f"Appended missing exclusions to {file_path}")
 
 def create_demo_plan():
-    """Generates the standardized specs/DEMO_PLAN.md tracker if missing."""
-    plan_path = './specs/DEMO_PLAN.md'
+    """Generates the standardized liferay/specs/DEMO_PLAN.md tracker if missing."""
+    plan_path = './liferay/specs/DEMO_PLAN.md'
     if os.path.exists(plan_path):
         return
         
@@ -143,7 +143,7 @@ def create_demo_plan():
 | Stylebook | Brand Identity mapping | `liferay/stylebooks/` | `[ ] Planned` |
 | UI Layout | Homepage Copy / Redesign | `liferay/fragments/` | `[ ] Planned` |
 | UI Component | [Custom Fragment] | `liferay/fragments/` | `[ ] Planned` |
-| Data Model | [Liferay Object] | `specs/objects/` | `[ ] Planned` |
+| Data Model | [Liferay Object] | `liferay/specs/objects/` | `[ ] Planned` |
 
 ## 5. Deployment & Launch Checklist
 - [ ] LDM Containers running and healthy
@@ -195,10 +195,13 @@ def main():
     admin_email, admin_password = parse_portal_ext()
     print(f"Resolved default admin credentials: {admin_email}")
     
-    # 4. Scaffold Folders
-    os.makedirs('./specs/objects', exist_ok=True)
-    os.makedirs('./specs/fragments', exist_ok=True)
-    os.makedirs('./input', exist_ok=True)
+    # 4. Scaffold Folders (Created inside ./liferay so they are version-controlled and shared)
+    os.makedirs('./liferay/specs/objects', exist_ok=True)
+    os.makedirs('./liferay/specs/fragments', exist_ok=True)
+    os.makedirs('./liferay/specs/client-extensions', exist_ok=True)
+    os.makedirs('./liferay/specs/stylebooks', exist_ok=True)
+    os.makedirs('./liferay/specs/pages', exist_ok=True)
+    os.makedirs('./liferay/input', exist_ok=True)
     create_demo_plan()
     
     # 5. Git Exclusions Setup
@@ -214,9 +217,7 @@ def main():
         ".workspace-rules/"
     ]
     
-    # Update Root .gitignore
-    update_gitignore('./.gitignore', [".env", "scripts/", "node_modules/", "build/"])
-    # Update Liferay Workspace .gitignore
+    # Only update ./liferay/.gitignore, as the root directory is not versioned
     update_gitignore('./liferay/.gitignore', ai_exclusions)
     
     # 6. Generate local .env File
