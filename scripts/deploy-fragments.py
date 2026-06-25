@@ -173,8 +173,8 @@ def main():
         
     print(f"Found {len(collections)} fragment collection(s): {', '.join(collections)}")
     
-    # 2. Setup output folder
-    deploy_assets_dir = os.path.join(get_workspace_dir(), 'liferay', 'deploy-assets')
+    # 2. Setup output folder (Using LDM's standard root-level deploy/ directory)
+    deploy_assets_dir = os.path.join(get_workspace_dir(), 'deploy')
     os.makedirs(deploy_assets_dir, exist_ok=True)
     
     # 3. Package each collection into deploy-assets/
