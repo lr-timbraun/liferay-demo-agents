@@ -56,9 +56,11 @@ You should see `liferay-demo-agents` listed in the output!
 Before starting, ensure you have the following installed and configured locally:
 *   **Blade CLI (8.0.1+):** Liferay Workspace tooling.
 *   **Liferay Docker Manager (LDM):** Local container orchestrator.
-*   **GitHub CLI (`gh`):** Logged in (`gh auth status`) and configured for Git operations.
 *   **Python (3.10+):** Available in your shell PATH (`python --version`).
+*   **GitHub CLI (`Optional, only required if you plan to use a github repository`):** Logged in (`gh auth status`) and configured for Git operations.
 *   **Playwright:** Python library installed (`pip install playwright` followed by `playwright install`).
+
+LDA will automatically check if these have been installed and won't initialize projects without them.
 
 ### 2. Enable Required Feature Flags
 To use all of the advanced features of Liferay Demo Agents (such as the MCP Server, Page Management REST API, and New CMS), you must enable Liferay's developer feature flags.
@@ -80,6 +82,22 @@ Create an empty directory, open your Gemini CLI in it, and run the following com
 
 ```bash
 /lda:init
+```
+
+If you already have an LDM Project, you can add LDA to it by using
+
+```bash
+/lda:activate
+```
+
+### 4. Continuing your work (Experimental)
+> ⚠️ **EXPERIMENTAL:** This feature is currently experimental and in active development.
+
+To continue where you left off before, you can run:
+
+```bash
+/resume     # This will resume your previous gemini session
+/lda:resume # This will bring back up the LDM containers
 ```
 
 ---
