@@ -16,40 +16,6 @@ It is tailored specifically for building visually stunning, "Boardroom Ready" pr
 
 ---
 
-## 🛠️ Setup & Prerequisites
-
-### 1. Verification
-Before starting, ensure you have the following installed and configured locally:
-*   **Blade CLI (8.0.1+):** Liferay Workspace tooling.
-*   **Liferay Docker Manager (LDM):** Local container orchestrator.
-*   **GitHub CLI (`gh`):** Logged in (`gh auth status`) and configured for Git operations.
-*   **Python (3.10+):** Available in your shell PATH (`python --version`).
-*   **Playwright:** Python library installed (`pip install playwright` followed by `playwright install`).
-
-### 2. Enable Required Feature Flags
-To use all of the advanced features of Liferay Demo Agents (such as the MCP Server, Page Management REST API, and New CMS), you must enable Liferay's developer feature flags.
-
-Add the following to your local LDM project's `/common/portal-ext.properties` file:
-
-```properties
-#LPD-63311 Enables the MCP Server
-feature.flag.LPD-63311=true
-#LPD-34594 and LPD-17564 together enable the new CMS
-feature.flag.LPD-34594=true
-feature.flag.LPD-17564=true
-#LPD-35443 enables the Page Management API
-feature.flag.LPD-35443=true
-```
-
-### 3. Auto-Initialization
-The framework provides an automated workspace scaffolding utility. When starting a fresh project, running `/lda:init` will:
-1.  Scaffold a new LDM container stack and Blade Workspace.
-2.  Run `scaffold-workspace.py` to create specs directories, standard `DEMO_PLAN.md` templates, and configure `.gitignore` exclusions.
-3.  Automatically extract default administrator credentials from LDM's properties and generate your local `.env` configuration.
-4.  Run `provision-agent-admin.py` to programmatically create a dedicated AI Agent administrator account (`shirley.temple@liferay.com`) via headless REST APIs and save her credentials in your local `.env`.
-
----
-
 ## 📥 Installation & Linking
 
 You can install and register this extension in your global **Gemini CLI** configuration using one of the following methods:
@@ -81,6 +47,40 @@ Verify that the extension has been successfully registered and enabled:
 gemini extensions list
 ```
 You should see `liferay-demo-agents` listed in the output!
+
+---
+
+## 🛠️ Setup & Prerequisites
+
+### 1. Verification
+Before starting, ensure you have the following installed and configured locally:
+*   **Blade CLI (8.0.1+):** Liferay Workspace tooling.
+*   **Liferay Docker Manager (LDM):** Local container orchestrator.
+*   **GitHub CLI (`gh`):** Logged in (`gh auth status`) and configured for Git operations.
+*   **Python (3.10+):** Available in your shell PATH (`python --version`).
+*   **Playwright:** Python library installed (`pip install playwright` followed by `playwright install`).
+
+### 2. Enable Required Feature Flags
+To use all of the advanced features of Liferay Demo Agents (such as the MCP Server, Page Management REST API, and New CMS), you must enable Liferay's developer feature flags.
+
+Add the following to your LDM `/common/portal-ext.properties` file:
+
+```properties
+#LPD-63311 enables the MCP Server
+feature.flag.LPD-63311=true
+#LPD-34594 and LPD-17564 together enable the new CMS
+feature.flag.LPD-34594=true
+feature.flag.LPD-17564=true
+#LPD-35443 enables the Page Management API
+feature.flag.LPD-35443=true
+```
+
+### 3. Auto-Initialization
+Create an empty directory, open your Gemini CLI in it, and run the following command:
+
+```bash
+/lda:init
+```
 
 ---
 
