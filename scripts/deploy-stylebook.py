@@ -24,7 +24,8 @@ def get_stylebooks_dir():
 def package_stylebook(source_dir, output_zip):
     """
     Packages a Stylebook folder into a ZIP archive.
-    Only style-book.json and frontend-tokens-values.json are written at the root.
+    The files must be nested inside a subdirectory (named after the Stylebook)
+    inside the ZIP file to ensure Liferay's ZIP processor can resolve a unique key.
     """
     required_files = ["style-book.json", "frontend-tokens-values.json"]
     
@@ -34,10 +35,14 @@ def package_stylebook(source_dir, output_zip):
             print(f"Error: Required file {f} missing in {source_dir}.")
             return False
             
+    stylebook_folder_name = os.path.basename(source_dir.rstrip('/\\'))
+    
     with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for f in required_files:
             file_path = os.path.join(source_dir, f)
-            zipf.write(file_path, arcname=f)
+            # Nest the files inside the stylebook directory within the ZIP
+            arcname = os.path.join(stylebook_folder_name, f)
+            zipf.write(file_path, arcname=arcname)
     return True
 
 def automate_ui_import(host, email, password, zipped_files):

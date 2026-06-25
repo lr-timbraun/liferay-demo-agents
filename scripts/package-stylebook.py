@@ -23,12 +23,14 @@ def package_stylebook(source_dir, output_zip):
             sys.exit(1)
 
     # Create the zip file in the project root
+    stylebook_folder_name = os.path.basename(source_dir.rstrip('/\\'))
     print(f"Packaging {source_dir} into {output_zip}...")
     with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for f in required_files:
             file_path = os.path.join(source_dir, f)
-            # Add file to zip (arcname is the name inside the zip)
-            zipf.write(file_path, arcname=f)
+            # Add file to zip inside a nested subdirectory (required by Liferay DXP)
+            arcname = os.path.join(stylebook_folder_name, f)
+            zipf.write(file_path, arcname=arcname)
 
     print(f"Successfully created {output_zip}")
 
