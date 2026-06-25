@@ -73,7 +73,7 @@ Once the sub-agents have completed their isolated tasks, the Orchestrator resume
 
 1.  **Local Build & Package:**
     - **Client Extensions:** Run the automated script `python scripts/deploy-client-extensions.py` from the project directory. This compiles and packages any client extensions locally for maximum speed and hot-deploys them directly to LDM.
-    - **Fragments:** Use `scripts/package-fragments.py` to package ZIP fragment collections, and then import them directly via the "Page Fragments" Site Builder UI, or drop them in the `deploy/` directory.
+    - **Fragments:** Run the automated script `python scripts/deploy-fragments.py` from the project directory. This automatically packages all fragment collections into ZIP archives inside `./liferay/deploy-assets/` and outputs exact step-by-step instructions to import them globally.
     - **Stylebooks:** Confirm the Stylebook ZIP has been generated and is ready to load.
 2.  **Verification:** Confirm the success of each local build step. If a packaging or deploy step fails, delegate the fix back to the relevant sub-agent with the error log.
 3.  **Total Setup Validation:** Upon your explicit request (once deployment and manual configuration are done), execute the tests defined in `liferay/specs/TEST_PLAN.md`.
