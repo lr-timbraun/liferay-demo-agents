@@ -5,39 +5,9 @@ import zipfile
 import base64
 from playwright.sync_api import sync_playwright
 
-def get_env_path():
-    """Finds the .env file by searching upwards from the current directory."""
-    current_dir = os.path.abspath(os.getcwd())
-    while current_dir != os.path.dirname(current_dir):
-        env_path = os.path.join(current_dir, '.env')
-        if os.path.exists(env_path):
-            return env_path
-        current_dir = os.path.dirname(current_dir)
-    return os.path.join(os.path.abspath(os.getcwd()), '.env')
-
-def get_credentials():
-    """Reads Liferay credentials and host URL from the local .env file."""
-    env_path = get_env_path()
-    email = None
-    password = None
-    host = None
-    
-    if os.path.exists(env_path):
-        with open(env_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                line_stripped = line.strip()
-                if line_stripped.startswith('LIFERAY_ADMIN_EMAIL_ADDRESS='):
-                    email = line_stripped.split('=', 1)[1].strip()
-                elif line_stripped.startswith('LIFERAY_ADMIN_PASSWORD='):
-                    password = line_stripped.split('=', 1)[1].strip()
-                elif line_stripped.startswith('LIFERAY_HOST='):
-                    host = line_stripped.split('=', 1)[1].strip()
-                    
-    if not host or not email or not password:
-        print(f"Error: Missing credentials or LIFERAY_HOST inside {env_path}")
-        sys.exit(1)
-        
-    return email, password, host.rstrip('/')
+# Import standard credential utility
+sys.path.append(os.path.dirname(__file__))
+import env_utils
 
 def get_fragments_dir():
     """Locates the liferay/fragments folder in the workspace."""
@@ -224,7 +194,9 @@ def main():
         sys.exit(1)
         
     # 4. Resolve Liferay Host & Credentials and Automate Frontend Import via Playwright
-    email, password, host = get_credentials()
+    email = env_utils.get_admin_email()
+    password = env_utils.get_admin_password()
+    host = env_utils.get_host()
     
     try:
         import_ok = automate_ui_import(host, email, password, zipped_files)

@@ -4,10 +4,12 @@ import requests
 import json
 # Import standard credential utility
 sys.path.append(os.path.dirname(__file__))
-from liferay_utils import get_credentials
+import env_utils
 
 def create_and_publish_object(payload):
-    email, password, host = get_credentials()
+    email = env_utils.get_admin_email()
+    password = env_utils.get_admin_password()
+    host = env_utils.get_host()
     auth = (email, password)
     
     # 1. Create Definition
