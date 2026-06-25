@@ -50,7 +50,7 @@ You should see `liferay-demo-agents` listed in the output!
 
 ---
 
-## 🛠️ Setup & Prerequisites
+## 🛠️ Project Setup & Prerequisites
 
 ### 1. Verification
 Before starting, ensure you have the following installed and configured locally:
