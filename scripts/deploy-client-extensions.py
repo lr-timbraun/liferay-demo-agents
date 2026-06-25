@@ -17,7 +17,7 @@ def get_client_extensions_dir():
     return None
 
 def build_client_extension(cx_dir, project_name):
-    """Compiles a specific client extension locally if it's node-based."""
+    """Compiles a specific client extension locally if it requires local build."""
     project_path = os.path.join(cx_dir, project_name)
     package_json = os.path.join(project_path, 'package.json')
     
@@ -25,7 +25,7 @@ def build_client_extension(cx_dir, project_name):
         # Not a node-based client extension, skipping local build
         return True
         
-    print(f"\n--- Building React Client Extension: {project_name} ---")
+    print(f"\n--- Building Client Extension: {project_name} ---")
     if not is_npm_available():
         print("Warning: Local 'npm' command not found in your system PATH.")
         print("Bypassing local compilation; LDM container will attempt to compile it during deploy.")
