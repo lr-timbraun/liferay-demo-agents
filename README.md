@@ -1,4 +1,4 @@
-# Liferay Sales Engineering - Demo Agent Framework
+# Liferay Demo Agent Framework
 
 This repository houses the configuration, specialized agent personas, custom skills, and local automation scripts designed for **Gemini CLI** (and other compatible AI tools) to automate the development, packaging, and validation of Liferay DXP demonstrations.
 
