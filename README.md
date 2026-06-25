@@ -40,13 +40,22 @@ The framework provides an automated workspace scaffolding utility. When starting
 You can install and register this extension in your global **Gemini CLI** configuration using one of the following methods:
 
 ### Option A: Link Local Path (Recommended for Developers)
-If you are developing or modifying the extension, use the `link` command. Any updates made to the local directory are instantly reflected in your active CLI sessions:
-```bash
-gemini extensions link C:\Liferay\Projects\liferay-demo-agents
-```
+If you are developing or modifying the extension, you should link it locally so that any changes are instantly reflected in your active CLI sessions:
+
+1.  **Clone the Repository:**
+    Clone/check out the repository to your local machine and navigate into the folder:
+    ```bash
+    git clone https://github.com/lr-timbraun/liferay-demo-agents.git
+    cd liferay-demo-agents
+    ```
+2.  **Link the Extension:**
+    Execute the link command using a relative path (`.`) from inside the cloned directory (or provide the absolute path of your custom local clone):
+    ```bash
+    gemini extensions link .
+    ```
 
 ### Option B: Install from Git
-To install the extension directly from our remote GitHub repository:
+To install the extension directly from the remote GitHub repository without a local clone:
 ```bash
 gemini extensions install https://github.com/lr-timbraun/liferay-demo-agents
 ```
