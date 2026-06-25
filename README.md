@@ -2,7 +2,7 @@
 
 This repository houses the configuration, specialized agent personas, custom skills, and local automation scripts designed for **Gemini CLI** (and other compatible AI tools) to automate the development, packaging, and validation of Liferay DXP demonstrations locally using **Liferay Docker Manager (LDM)** and **Blade CLI**.
 
-It is tailored specifically for **Liferay Sales Engineers** to build visually stunning, "Boardroom Ready" proof-of-concepts and demos with speed, consistency, and structural integrity.
+It is tailored specifically for building visually stunning, "Boardroom Ready" proof-of-concepts and demos with speed, consistency, and structural integrity.
 
 ---
 
@@ -32,6 +32,31 @@ The framework provides an automated workspace scaffolding utility. When starting
 2.  Run `scaffold-workspace.py` to create specs directories, standard `DEMO_PLAN.md` templates, and configure `.gitignore` exclusions.
 3.  Automatically extract default administrator credentials from LDM's properties and generate your local `.env` configuration.
 4.  Run `provision-agent-admin.py` to programmatically create a dedicated AI Agent administrator account (`shirley.temple@liferay.com`) via headless REST APIs and save her credentials in your local `.env`.
+
+---
+
+## 📥 Installation & Linking
+
+You can install and register this extension in your global **Gemini CLI** configuration using one of the following methods:
+
+### Option A: Link Local Path (Recommended for Developers)
+If you are developing or modifying the extension, use the `link` command. Any updates made to the local directory are instantly reflected in your active CLI sessions:
+```bash
+gemini extensions link C:\Liferay\Projects\liferay-demo-agents
+```
+
+### Option B: Install from Git
+To install the extension directly from our remote GitHub repository:
+```bash
+gemini extensions install https://github.com/lr-timbraun/liferay-demo-agents
+```
+
+### 🔍 Verify Installation
+Verify that the extension has been successfully registered and enabled:
+```bash
+gemini extensions list
+```
+You should see `liferay-demo-agents` listed in the output!
 
 ---
 
@@ -71,7 +96,7 @@ To ensure fragments and client extensions are completely portable and support Li
 
 ---
 
-## 🤖 Local SE Automation Scripts
+## 🤖 Local Automation Scripts
 
 This framework provides a suite of local Python helper scripts inside the `scripts/` directory to completely automate setup, credentials, and packaging:
 
@@ -85,4 +110,4 @@ This framework provides a suite of local Python helper scripts inside the `scrip
 ---
 
 ## 📄 License
-This agent framework is released under the [MIT License](LICENSE). It is intended for Liferay Sales Engineering internal use.
+This agent framework is released under the [MIT License](LICENSE). It is intended for creating Demo systems, not for production environments.
