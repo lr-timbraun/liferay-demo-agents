@@ -39,7 +39,7 @@ The framework provides an automated workspace scaffolding utility. When starting
 
 You can install and register this extension in your global **Gemini CLI** configuration using one of the following methods:
 
-### Option A: Link Local Path (Recommended for Developers)
+### Option A: Link Local Path (Recommended if you want to develop LDA)
 If you are developing or modifying the extension, you should link it locally so that any changes are instantly reflected in your active CLI sessions:
 
 1.  **Clone the Repository:**
@@ -54,7 +54,7 @@ If you are developing or modifying the extension, you should link it locally so 
     gemini extensions link .
     ```
 
-### Option B: Install from Git
+### Option B: Install from Git (Recommended for general use)
 To install the extension directly from the remote GitHub repository without a local clone:
 ```bash
 gemini extensions install https://github.com/lr-timbraun/liferay-demo-agents
