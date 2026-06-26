@@ -12,6 +12,9 @@
         "${extensionPath}${/}index.js"
       ],
       "cwd": "${extensionPath}",
+      "env": {
+        "WORKSPACE_PATH": "${workspacePath}"
+      },
       "timeout": 60000
     }
   }

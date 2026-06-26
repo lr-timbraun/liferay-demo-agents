@@ -6,7 +6,8 @@ const https = require('https');
 
 // 1. Helper to read and parse local .env from current working directory (project root)
 function getLiferayConfig() {
-    const envPath = path.join(process.cwd(), '.env');
+    const workspacePath = process.env.WORKSPACE_PATH || process.cwd();
+    const envPath = path.join(workspacePath, '.env');
     if (!fs.existsSync(envPath)) {
         return null;
     }
