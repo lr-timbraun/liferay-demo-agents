@@ -7,6 +7,7 @@ Please execute the Liferay Demo Agents Resume Protocol for the current project:
    - **Blade CLI:** Run `blade version` to get the current version. If the output indicates a newer version is available, you MUST explicitly ask the user for permission (using `ask_user`) before running `blade update`.
    - **Liferay Docker Manager (LDM):** Run `ldm --version` to get the current version. If LDM is out of date, you MUST explicitly ask the user for permission (using `ask_user`) before running `ldm upgrade`.
    - **Python Availability:** Run `python --version`. Ensure the active version is **Python 3.10 or higher** to support LDM's internal handlers, Playwright testing, and automated Python helpers.
+   - **LDA Version Verification:** Run the scaffolding script in check-version mode: `python scripts/scaffold-workspace.py --mode check-version`. If it outputs a version mismatch warning, display the warning clearly to the user, recommend running the `/lda:project-upgrade` command, and explicitly ask them if they want to proceed with the upgrade before continuing with the container boots.
 
 2. Configuration & MCP Activation Check:
    - Verify and read the local `.env` file in the current directory (recovering `LIFERAY_HOST` and active agent admin credentials).

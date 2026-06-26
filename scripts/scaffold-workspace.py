@@ -176,12 +176,39 @@ def get_extension_version():
 
 def main():
     parser = argparse.ArgumentParser(description="LDA Workspace Scaffolding and Environment Config Orchestrator.")
-    parser.add_argument('--mode', choices=['init', 'activate'], required=True, help="Orchestration mode")
+    parser.add_argument('--mode', choices=['init', 'activate', 'check-version'], required=True, help="Orchestration mode")
     parser.add_argument('--host', help="Liferay Host URL (only required for init mode)")
     parser.add_argument('--lda-version', default=None, help="Liferay Demo Agent version")
     
     args = parser.parse_args()
     
+    # Check version mode
+    if args.mode == 'check-version':
+        project_version = '0.1.0' # Default fallback if lda.properties is missing
+        lda_prop_path = './lda.properties'
+        if os.path.exists(lda_prop_path):
+            try:
+                with open(lda_prop_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        if line.strip().startswith('lda.version'):
+                            project_version = line.split('=', 1)[1].strip()
+                            break
+            except Exception:
+                pass
+                
+        ext_version = get_extension_version()
+        if project_version != ext_version:
+            print("\n" + "!" * 80)
+            print(f"⚠️  [WARNING] LDA Version Mismatch Detected!")
+            print(f"   * This project was scaffolded with LDA version: {project_version}")
+            print(f"   * Your active globally linked extension version is: {ext_version}")
+            print("\n   👉 RECOMMENDED ACTION: Please run '/lda:project-upgrade' to safely")
+            print("      upgrade your project workspace to the latest version!")
+            print("!" * 80 + "\n")
+        else:
+            print(f"LDA Version Check: Project is up-to-date with active extension (version {ext_version}).")
+        sys.exit(0)
+        
     # 1. Resolve host
     if args.mode == 'init':
         host = args.host

@@ -1,0 +1,12 @@
+description = "Upgrade the current project workspace helper scripts and properties to match the active globally linked LDA extension version."
+
+prompt = """
+Please execute the Liferay Demo Agents Project Upgrade Protocol for the current project:
+
+1. Locate the globally linked `liferay-demo-agents` extension folder on your local machine (where your active context is loaded).
+2. Execute the project-upgrade python script inside the current project workspace directory:
+   `python <extension_dir>/scripts/project-upgrade.py`
+3. Verify that the script successfully executes, completes all version-upgrade steps sequentially, updates `./lda.properties`, and displays the completion status.
+
+Arguments: {{args}}
+"""
