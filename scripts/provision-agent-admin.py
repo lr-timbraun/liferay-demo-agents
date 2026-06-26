@@ -193,6 +193,19 @@ def main():
         sys.exit(1)
     print("Verification successful! Dedicated agent admin account is functional.")
 
+    # 6b. Verify Liferay MCP Server is available
+    print("Verifying Liferay MCP Server is active and available at /o/mcp...")
+    mcp_url = f"{host}/o/mcp"
+    mcp_code, mcp_res = make_request(mcp_url, auth_header=agent_auth_header)
+    
+    # Standard Liferay MCP Server returns HTTP 400 when GET requested without SSE headers,
+    # or HTTP 200/204 when active. Any code in (200, 204, 400) proves the servlet is listening!
+    if mcp_code not in (200, 204, 400):
+        print(f"Error: Liferay MCP Server is NOT active at /o/mcp (HTTP {mcp_code}).")
+        print("  👉 Please verify that 'feature.flag.LPD-63311=true' is set in 'files/portal-ext.properties'!")
+        sys.exit(1)
+    print("Liferay MCP Server verification successful! Server is responsive and listening.")
+
     # 7. Overwrite/update local .env file
     env_path = get_env_path()
     print(f"Saving agent admin credentials to {env_path}...")
