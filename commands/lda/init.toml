@@ -38,8 +38,8 @@ Please execute the Liferay Demo Agents Initialization Protocol for a fresh proje
      5. `deploy-fragments.py`
      6. `deploy-stylebook.py`
      Then write each of them directly into the target project's `./scripts/` directory (e.g. `./scripts/env_utils.py`, `./scripts/deploy-fragments.py`, etc.) using your native `write_file` tool. Do NOT run native shell copy commands (like Copy-Item, cp, or shutil) as they are platform-dependent and prone to permissions issues.
-   - **Unified Workspace Scaffolding Script:** Immediately after copying, run the unified python scaffolding script to automatically verify portal-ext properties, configure Liferay MCP Server activation flags, create specs folders, standard `DEMO_PLAN.md` template, setup `.gitignore` exclusions (including `.env` exclusions), and generate the pre-boot `.env` file:
-     `python scripts/scaffold-workspace.py --mode init --host <user-provided-url>`
+   - **Unified Workspace Scaffolding Script:** Immediately after copying, read the `"version"` key from the extension's `gemini-extension.json` file. Then run the unified python scaffolding script to automatically verify portal-ext properties, configure Liferay MCP Server activation flags, create specs folders, standard `DEMO_PLAN.md` template, setup `.gitignore` exclusions (including `.env` exclusions), generate the pre-boot `.env` file, and create the `lda.properties` version tracker, passing the parsed version dynamically:
+     `python scripts/scaffold-workspace.py --mode init --host <user-provided-url> --lda-version <version>`
 
 4. Optional GitHub Repository Provisioning:
    - If the user chose to create a GitHub repository, you MUST track *only* the `./liferay/` workspace subdirectory (all AI/IDE config directories and `.env` have already been securely excluded in `./liferay/.gitignore` by the scaffolding script):

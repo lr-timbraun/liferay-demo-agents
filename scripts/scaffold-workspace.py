@@ -160,10 +160,25 @@ def create_demo_plan():
         f.write(content)
     print(f"Created template {plan_path}")
 
+def get_extension_version():
+    """Attempts to read the version dynamically from gemini-extension.json."""
+    try:
+        curr = os.path.dirname(os.path.abspath(__file__))
+        for _ in range(4):
+            path = os.path.join(curr, 'gemini-extension.json')
+            if os.path.exists(path):
+                with open(path, 'r', encoding='utf-8') as f:
+                    return json.load(f).get('version', '0.0.0')
+            curr = os.path.dirname(curr)
+    except Exception:
+        pass
+    return '0.0.0'
+
 def main():
     parser = argparse.ArgumentParser(description="LDA Workspace Scaffolding and Environment Config Orchestrator.")
     parser.add_argument('--mode', choices=['init', 'activate'], required=True, help="Orchestration mode")
     parser.add_argument('--host', help="Liferay Host URL (only required for init mode)")
+    parser.add_argument('--lda-version', default=None, help="Liferay Demo Agent version")
     
     args = parser.parse_args()
     
@@ -230,6 +245,18 @@ def main():
     with open(env_path, 'w', encoding='utf-8') as f:
         f.writelines(env_content)
     print(f"Successfully generated/updated local configuration file {env_path}")
+    
+    # 7. Generate local lda.properties File
+    lda_prop_path = './lda.properties'
+    lda_version = args.lda_version or get_extension_version()
+    lda_prop_content = [
+        "# Liferay Demo Agent (LDA) Workspace Properties\n",
+        f"lda.version={lda_version}\n"
+    ]
+    with open(lda_prop_path, 'w', encoding='utf-8') as f:
+        f.writelines(lda_prop_content)
+    print(f"Successfully generated/updated local configuration file {lda_prop_path}")
+    
     print("Workspace Scaffolding and Scaffolding Orchestration Complete!")
 
 if __name__ == '__main__':
