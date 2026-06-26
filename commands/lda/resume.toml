@@ -19,11 +19,8 @@ Please execute the Liferay Demo Agents Resume Protocol for the current project:
    - **Conditional Boot:** If and only if the containers are NOT already running or `<LIFERAY_HOST>` is inaccessible, run `ldm run` inside the current directory to boot the container stack.
      * **CRITICAL:** When booting, you MUST run this command synchronously (set `is_background = false` in your `run_shell_command` tool call). Do NOT background the process or use background execution constructs. Wait patiently for the command to finish executing completely (which takes 2-5 minutes as LDM blocks until Liferay's health checks pass) before proceeding.
 
-4. MCP Server Registration & Connection:
-   - Once the boot process is complete and Liferay is active, Base64-encode the active agent credentials (`LIFERAY_ADMIN_EMAIL_ADDRESS:LIFERAY_ADMIN_PASSWORD`) read from the local `.env` file (corresponding to Shirley Temple's account).
-   - Register/add the Liferay MCP Server into the Gemini CLI workspace-local configuration using the `gemini mcp add` command if it is not already configured:
-     `gemini mcp add -s project liferay npx mcp-remote <LIFERAY_HOST>/o/mcp --header "Authorization: Basic <base64_token>" --trust`
-   - Verify that the registered Liferay MCP Server connects successfully and its tools are active by reloading and checking the MCP list (`gemini mcp list` or `/mcp reload`).
+4. Native Proxy Tool Verification:
+   - Once the boot process is complete and Liferay is active, our statically loaded native Liferay API Proxy tools (`liferay_get_openapis`, `liferay_get_openapi`, `liferay_call_http_endpoint`) are already active and will automatically connect and route requests to your local container using the active credentials inside `.env` with no restarts or manual MCP registration required!
 
 5. Status & MCP Verification Check:
    - Do NOT start or reset the demo planning phase by default (planning may have already concluded).
