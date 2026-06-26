@@ -30,7 +30,14 @@ Please execute the Liferay Demo Agents Initialization Protocol for a fresh proje
      * Note on host-name: Derive the clean local domain from the Local URL provided by the user (e.g., `321test.demo` if URL is `https://321test.demo`). This is critical to configure Traefik host routing and prevent 404 errors.
      * Note on non-interactivity: You MUST pass the `-y` / `--non-interactive` flag so that LDM initializes headlessly.
    - Run Blade Workspace initialization: `blade init -v <version-tag> liferay` directly inside the current directory to bootstrap a standard Liferay Workspace in a `./liferay/` subdirectory.
-   - **Agent-Native Script Scaffolding (Automated):** To ensure the orchestration helper scripts are present in this fresh directory, use your native `read_file` tool to read `scaffold-workspace.py` and `provision-agent-admin.py` from the `liferay-demo-agents` extension's `scripts/` directory (located under your active loaded context). Then write them directly to `./scripts/scaffold-workspace.py` and `./scripts/provision-agent-admin.py` in the target project directory using your native `write_file` tool. Do NOT run native shell copy commands (like Copy-Item, cp, or shutil) as they are platform-dependent and prone to permissions issues.
+   - **Agent-Native Script Scaffolding (Automated):** To ensure the orchestration and deployment helper scripts are present in this fresh directory, use your native `read_file` tool to read all 6 active core scripts from the `liferay-demo-agents` extension's `scripts/` directory (located under your active loaded context):
+     1. `env_utils.py`
+     2. `scaffold-workspace.py`
+     3. `provision-agent-admin.py`
+     4. `deploy-client-extensions.py`
+     5. `deploy-fragments.py`
+     6. `deploy-stylebook.py`
+     Then write each of them directly into the target project's `./scripts/` directory (e.g. `./scripts/env_utils.py`, `./scripts/deploy-fragments.py`, etc.) using your native `write_file` tool. Do NOT run native shell copy commands (like Copy-Item, cp, or shutil) as they are platform-dependent and prone to permissions issues.
    - **Unified Workspace Scaffolding Script:** Immediately after copying, run the unified python scaffolding script to automatically verify portal-ext properties, configure Liferay MCP Server activation flags, create specs folders, standard `DEMO_PLAN.md` template, setup `.gitignore` exclusions (including `.env` exclusions), and generate the pre-boot `.env` file:
      `python scripts/scaffold-workspace.py --mode init --host <user-provided-url>`
 
