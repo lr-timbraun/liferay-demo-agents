@@ -12,6 +12,7 @@ It is tailored specifically for building visually stunning, "Boardroom Ready" pr
 *   **Specialized Agent Personas:** Dedicated configurations for `site-design`, `fragment`, `object`, and `custom-element` development. Further agents are in development.
 *   **Concurrently Isolated Execution:** Sub-agents are restricted to their assigned directories, enabling multiple agents to run in parallel without file collisions.
 *   **Automated Deployment Scripts:** A suite of local Python scripts that automate compiling, packaging, and hot-deploying Stylebooks, Fragments, and Client Extensions.
+*   **Zero-Dependency Native Liferay API Proxy:** Registers the three core universal Liferay API tools (`liferay_get_openapis`, `liferay_get_openapi`, `liferay_call_http_endpoint`) natively inside your Gemini CLI at session startup. Dynamically resolves credentials from your local `.env` file at execution time to securely route requests to your active LDM container, **bypassing session restarts completely**.
 *   **End-to-End Persona Validation:** Mandates the creation of a `liferay/specs/TEST_PLAN.md` which performs visual, interactive, in-session browser testing on the live site.
 
 ---
