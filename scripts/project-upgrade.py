@@ -69,7 +69,7 @@ def main():
     # E.g. key represents (source_version, target_version) and value represents the upgrade script name
     upgrade_path = [
         ("0.1.0", "0.1.1", "upgrade_0_1_0_to_0_1_1.py"),
-        ("0.1.1", "0.2.0-dev", "upgrade_0_1_1_to_0_2_0.py")
+        ("0.1.1", "0.2.0", "upgrade_0_1_1_to_0_2_0.py")
     ]
     
     # Find all steps needed to migrate from project_version to ext_version

@@ -3,11 +3,11 @@ import json
 
 def run_upgrade(extension_dir, project_dir):
     """
-    Upgrades a project from LDA 0.1.1 to 0.2.0-dev.
+    Upgrades a project from LDA 0.1.1 to 0.2.0.
     Unregisters the legacy, un-proxied 'liferay' MCP server from the local .gemini/settings.json
     since we are now natively using the statically registered liferay-api-proxy instead.
     """
-    print("Executing upgrade step: 0.1.1 -> 0.2.0-dev...")
+    print("Executing upgrade step: 0.1.1 -> 0.2.0...")
     
     settings_path = os.path.join(project_dir, ".gemini", "settings.json")
     if os.path.exists(settings_path):
@@ -35,5 +35,5 @@ def run_upgrade(extension_dir, project_dir):
     else:
         print("  * Note: No local .gemini/settings.json file found. Skipping.")
         
-    print("Successfully completed upgrade step: 0.1.1 -> 0.2.0-dev!")
+    print("Successfully completed upgrade step: 0.1.1 -> 0.2.0!")
     return True
