@@ -8,6 +8,7 @@ import secrets
 import string
 import urllib.request
 import urllib.error
+import ssl
 
 def get_env_path():
     """Finds the .env file by searching upwards from the current directory."""
@@ -47,7 +48,9 @@ def make_request(url, payload=None, method='GET', auth_header=None):
 
     req = urllib.request.Request(url, data=data_bytes, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(req) as response:
+        # Create unverified context to support self-signed local SSL certs on LDM
+        context = ssl._create_unverified_context()
+        with urllib.request.urlopen(req, context=context) as response:
             status = response.status
             body = response.read().decode('utf-8')
             return status, json.loads(body) if body else {}

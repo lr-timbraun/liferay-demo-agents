@@ -69,8 +69,10 @@ function makeHttpRequest(config, endpointPath, method = 'GET', payload = null) {
         };
         
         if (isHttps) {
-            // Bypass self-signed local Traefik cert validation issues (e.g. without mkcert)
-            options.rejectUnauthorized = false;
+            // Use an explicit agent with rejectUnauthorized: false to guarantee bypassing SSL cert validation
+            options.agent = new https.Agent({
+                rejectUnauthorized: false
+            });
         }
         
         let bodyData = null;
