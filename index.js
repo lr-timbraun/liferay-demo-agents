@@ -69,13 +69,6 @@ function makeHttpRequest(config, endpointPath, method = 'GET', payload = null) {
             }
         };
         
-        if (isHttps) {
-            // Use an explicit agent with rejectUnauthorized: false to guarantee bypassing SSL cert validation
-            options.agent = new https.Agent({
-                rejectUnauthorized: false
-            });
-        }
-        
         let bodyData = null;
         if (payload) {
             bodyData = typeof payload === 'string' ? payload : JSON.stringify(payload);

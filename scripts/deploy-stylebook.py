@@ -49,16 +49,13 @@ def automate_ui_import(host, email, password, zipped_files):
     """Uses Playwright to log in and import packaged Style Book ZIP files into the target Liferay Site."""
     print("\n--- Initiating Playwright Browser Automation ---")
     
-    # Enable unverified SSL contexts inside python's subprocess/browser environment if needed
-    os.environ['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
-    
     with sync_playwright() as p:
         # Launch Chromium headlessly
         print("Launching headless Chromium browser...")
         browser = p.chromium.launch(headless=True)
         
-        # Create context with unverified SSL context to bypass self-signed Traefik proxy cert errors
-        context = browser.new_context(ignore_https_errors=True)
+        # Create context enforcing strict SSL verification
+        context = browser.new_context()
         page = context.new_page()
         
         # 1. Login to Liferay
