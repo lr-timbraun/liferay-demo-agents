@@ -251,6 +251,7 @@ def main():
         "# AI & Agent Workspace Configurations",
         ".env",
         "scripts/",
+        "dist/",
         ".claude/",
         ".cursor/",
         ".gemini/",
