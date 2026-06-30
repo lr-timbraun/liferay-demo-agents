@@ -160,8 +160,16 @@ def main():
             deploy_success = False
             
     if deploy_success:
-        print("\nAll Liferay Client Extensions deployed successfully and ready for use!")
-        sys.exit(0)
+        # Trigger LDM Deploy to sync and refresh the active stack
+        print("\n--- Triggering LDM Deploy to Sync and Refresh Stack ---")
+        try:
+            use_shell = sys.platform == 'win32'
+            subprocess.run(['ldm', 'deploy'], shell=use_shell, check=True)
+            print("\nAll Liferay Client Extensions deployed and synchronized successfully!")
+            sys.exit(0)
+        except subprocess.CalledProcessError as e:
+            print(f"\nError: LDM Deploy command failed: {e}")
+            sys.exit(1)
     else:
         print("\nError: One or more client extensions failed deployment packaging.")
         sys.exit(1)
