@@ -39,9 +39,6 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
     """Uses Playwright to log in and import packaged Style Book ZIP files into the target Liferay Site."""
     print("\n--- Initiating Playwright Browser Automation ---")
     
-    # Track overall status of the deployment run
-    overall_status = "success"
-    
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context()
@@ -126,10 +123,27 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
                 alert_selector = '.alert-success, .clay-alert-success, .alert-danger, .clay-alert-danger, .alert-warning'
                 import_frame.locator(alert_selector).first.wait_for(timeout=25000)
                 
+                # Determine status descriptor dynamically
+                status_descriptor = "success"
+                is_danger = import_frame.locator('.alert-danger, .clay-alert-danger').first.count() > 0
+                if is_danger:
+                    status_descriptor = "failure"
+                else:
+                    is_warning = import_frame.locator('.alert-warning').first.count() > 0
+                    status_descriptor = "success_warnings" if is_warning else "success"
+                
+                # Capture standard receipt screenshot inside liferay/dist/receipts/ while alerts are fully visible
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                receipts_dir = os.path.join(os.getcwd(), 'liferay', 'dist', 'receipts')
+                os.makedirs(receipts_dir, exist_ok=True)
+                filename = f"receipt_stylebook_{sb_name}_{timestamp}_{status_descriptor}.png"
+                screenshot_path = os.path.join(receipts_dir, filename)
+                page.screenshot(path=screenshot_path)
+                print(f"\nCreated deployment visual receipt showing import result at: {os.path.relpath(screenshot_path)}")
+                
                 # Check 1: Check for critical, blocking errors inside the iframe
                 danger_alert = import_frame.locator('.alert-danger, .clay-alert-danger').first
                 if danger_alert.count() > 0:
-                    overall_status = "failure"
                     error_msg = danger_alert.text_content().strip()
                     print("\n" + "=" * 80)
                     print(f"❌  [ERROR] [{sb_name}] Stylebook import failed critically!")
@@ -141,7 +155,6 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
                 # Check 2: Check for non-critical warnings (like our theme mismatch!)
                 warning_alert = import_frame.locator('.alert-warning').first
                 if warning_alert.count() > 0:
-                    overall_status = "success_warnings"
                     warning_msg = warning_alert.text_content().strip()
                     print("\n" + "=" * 80)
                     print(f"⚠️  [WARNING] [{sb_name}] Stylebook imported with non-blocking warnings:")
@@ -162,20 +175,6 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
             print(f"[{sb_name}] Modal closed.")
             page.wait_for_timeout(1000)
             
-        # 5. Capture a clean, standardized receipt screenshot of the imported books in liferay/dist/receipts/
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        receipts_dir = os.path.join(os.getcwd(), 'liferay', 'dist', 'receipts')
-        os.makedirs(receipts_dir, exist_ok=True)
-        filename = f"receipt_stylebook_deployed_{timestamp}_{overall_status}.png"
-        screenshot_path = os.path.join(receipts_dir, filename)
-        
-        # Refresh to reload the list and show the books in the UI list
-        page.reload()
-        page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(2000) # Give extra time for React lists to render fully
-        page.screenshot(path=screenshot_path)
-        print(f"\nCreated deployment visual receipt at: {os.path.relpath(screenshot_path)}")
-        
         context.close()
         browser.close()
         return True
