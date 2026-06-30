@@ -70,11 +70,11 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
             sb_name = os.path.basename(zip_path).replace('.zip', '')
             print(f"\n[{sb_name}] Importing {zip_path} via UI...")
             
-            # Find and click the Actions / Options button in the management bar (Strictly class/ID-based, no text)
-            options_btn = page.locator('#portlet_com_liferay_style_book_web_portlet_StyleBookPortlet button[title*="Options"], #portlet_com_liferay_style_book_web_portlet_StyleBookPortlet button[title="Options"]').first
+            # Find and click the Actions / Options button in Liferay's top Control Menu header (strictly data-qa-id and class-based, no text)
+            options_btn = page.locator('li[data-qa-id="headerOptions"] button.portlet-options').first
             if options_btn.count() == 0:
-                # Fallback selector in case of non-standard button title or icon
-                options_btn = page.locator('#portlet_com_liferay_style_book_web_portlet_StyleBookPortlet button.dropdown-toggle, .management-bar-btn, button:has(svg[class*="ellipsis"])').first
+                # Fallback selector in case of portal-header changes
+                options_btn = page.locator('button[aria-label="Options"][title="Options"], button.portlet-options').first
                 
             if options_btn.count() == 0:
                 print(f"Error: Could not locate Options dropdown button on Style Books page. Saving screenshot.")
@@ -82,16 +82,12 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
                 return False
                 
             options_btn.click()
-            page.wait_for_timeout(500) # Let dropdown slide open
             
-            # Click "Import" menuitem inside open dropdown (strictly href/ID/attribute-based, no text)
-            import_menu_item = page.locator('.dropdown-menu a.dropdown-item[icon="import"]:visible, .dropdown-menu a[href*="import"]:visible, .dropdown-menu .dropdown-item[id*="import"]:visible').first
-            if import_menu_item.count() == 0:
-                print(f"Error: Could not find 'Import' option in Options dropdown. Saving screenshot.")
-                page.screenshot(path="test-projects/stylebook-import-error-menu.png")
-                return False
-                
+            # Click "Import" menuitem inside open dropdown (strictly data-action-based, targeting only the visible, verified element in the open dropdown)
+            # Playwright will automatically wait up to 30 seconds for the dropdown to open and the element to become visible before clicking!
+            import_menu_item = page.locator('.dropdown-menu button.dropdown-item[data-action*="StyleBookPortlet_import"]:visible, .dropdown-menu .dropdown-item[data-action*="import"]:visible').first
             import_menu_item.click()
+            
             page.wait_for_timeout(1500) # Let the Import modal iframe load
             
             # Locate the Liferay import iframe dialog
@@ -124,7 +120,7 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
             # 4. Wait for success or extract helpful errors from inside the iframe
             try:
                 alert_selector = '.alert-success, .clay-alert-success, .alert-danger, .clay-alert-danger, .alert-warning'
-                import_frame.wait_for_selector(alert_selector, timeout=25000)
+                import_frame.locator(alert_selector).first.wait_for(timeout=25000)
                 
                 # Check for danger/warning alerts inside the iframe
                 danger_alert = import_frame.locator('.alert-danger, .clay-alert-danger, .alert-warning').first
