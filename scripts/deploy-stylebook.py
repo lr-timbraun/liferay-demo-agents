@@ -3,6 +3,7 @@ import os
 import sys
 import zipfile
 import argparse
+import datetime
 from playwright.sync_api import sync_playwright
 
 # Import standard credential utility
@@ -37,6 +38,9 @@ def package_stylebook(source_dir, output_zip):
 def automate_ui_import(host, email, password, site_path, zipped_files):
     """Uses Playwright to log in and import packaged Style Book ZIP files into the target Liferay Site."""
     print("\n--- Initiating Playwright Browser Automation ---")
+    
+    # Track overall status of the deployment run
+    overall_status = "success"
     
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -117,23 +121,35 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
             import_submit_btn.click()
             print(f"[{sb_name}] Clicked Import. Waiting for Liferay processing...")
             
-            # 4. Wait for success or extract helpful errors from inside the iframe
+            # 4. Wait for success or extract helpful warning/error logs from inside the iframe
             try:
                 alert_selector = '.alert-success, .clay-alert-success, .alert-danger, .clay-alert-danger, .alert-warning'
                 import_frame.locator(alert_selector).first.wait_for(timeout=25000)
                 
-                # Check for danger/warning alerts inside the iframe
-                danger_alert = import_frame.locator('.alert-danger, .clay-alert-danger, .alert-warning').first
+                # Check 1: Check for critical, blocking errors inside the iframe
+                danger_alert = import_frame.locator('.alert-danger, .clay-alert-danger').first
                 if danger_alert.count() > 0:
+                    overall_status = "failure"
                     error_msg = danger_alert.text_content().strip()
                     print("\n" + "=" * 80)
-                    print(f"❌  [ERROR] [{sb_name}] Stylebook import failed!")
-                    print(f"    Helpful DXP Error Message Extracted:")
+                    print(f"❌  [ERROR] [{sb_name}] Stylebook import failed critically!")
                     print("-" * 80)
                     print(error_msg)
                     print("=" * 80 + "\n")
                     return False
+                    
+                # Check 2: Check for non-critical warnings (like our theme mismatch!)
+                warning_alert = import_frame.locator('.alert-warning').first
+                if warning_alert.count() > 0:
+                    overall_status = "success_warnings"
+                    warning_msg = warning_alert.text_content().strip()
+                    print("\n" + "=" * 80)
+                    print(f"⚠️  [WARNING] [{sb_name}] Stylebook imported with non-blocking warnings:")
+                    print("-" * 80)
+                    print(warning_msg)
+                    print("=" * 80 + "\n")
                 else:
+                    # Clean success
                     print(f"[{sb_name}] Style Book imported successfully!")
                     
             except Exception as alert_err:
@@ -146,14 +162,17 @@ def automate_ui_import(host, email, password, site_path, zipped_files):
             print(f"[{sb_name}] Modal closed.")
             page.wait_for_timeout(1000)
             
-        # 5. Capture a clean screenshot of the imported books as a visual receipt
-        screenshot_dir = os.path.join(os.getcwd(), 'tests', 'screenshots')
-        os.makedirs(screenshot_dir, exist_ok=True)
-        screenshot_path = os.path.join(screenshot_dir, 'stylebooks-deployed.png')
+        # 5. Capture a clean, standardized receipt screenshot of the imported books in liferay/dist/receipts/
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        receipts_dir = os.path.join(os.getcwd(), 'liferay', 'dist', 'receipts')
+        os.makedirs(receipts_dir, exist_ok=True)
+        filename = f"receipt_stylebook_deployed_{timestamp}_{overall_status}.png"
+        screenshot_path = os.path.join(receipts_dir, filename)
         
-        # Refresh to reload the list and show the books
+        # Refresh to reload the list and show the books in the UI list
         page.reload()
         page.wait_for_load_state("networkidle")
+        page.wait_for_timeout(2000) # Give extra time for React lists to render fully
         page.screenshot(path=screenshot_path)
         print(f"\nCreated deployment visual receipt at: {os.path.relpath(screenshot_path)}")
         

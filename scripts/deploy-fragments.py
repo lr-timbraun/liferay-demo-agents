@@ -2,6 +2,7 @@
 import os
 import sys
 import zipfile
+import datetime
 from playwright.sync_api import sync_playwright
 
 # Import standard credentials
@@ -120,17 +121,35 @@ def automate_ui_import(host, email, password, zipped_files):
                 except Exception:
                     pass
                 
-                # Save visual receipt screenshot
-                screenshot_dir = os.path.join(os.getcwd(), 'tests', 'screenshots')
-                os.makedirs(screenshot_dir, exist_ok=True)
-                page.screenshot(path=os.path.join(screenshot_dir, 'fragments-deployed.png'))
+                # Determine status descriptor dynamically
+                status_descriptor = "success"
+                is_warning = False
+                error_msg = ""
+                
+                # Check if we have hard critical error alerts
+                danger_alert = page.locator('.alert-danger, .clay-alert-danger').first
+                if danger_alert.count() > 0:
+                    status_descriptor = "failure"
+                    error_msg = danger_alert.text_content().strip()
+                else:
+                    # Check if Liferay's custom result sheet is visible
+                    sheet_el = page.locator('div.sheet .panel').first
+                    if sheet_el.count() > 0:
+                        is_warning = page.locator('div.sheet .text-warning, div.sheet .lexicon-icon-warning-full').count() > 0
+                        status_descriptor = "success_warnings" if is_warning else "success"
+                
+                # Capture standard receipt screenshot inside liferay/dist/receipts/
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                receipts_dir = os.path.join(os.getcwd(), 'liferay', 'dist', 'receipts')
+                os.makedirs(receipts_dir, exist_ok=True)
+                filename = f"receipt_fragments_{collection_name}_{timestamp}_{status_descriptor}.png"
+                screenshot_path = os.path.join(receipts_dir, filename)
+                page.screenshot(path=screenshot_path)
+                print(f"\nCreated deployment visual receipt at: {os.path.relpath(screenshot_path)}")
                 
                 # Check 1: Check for Liferay's custom import result sheet (.sheet)
                 sheet_el = page.locator('div.sheet .panel').first
                 if sheet_el.count() > 0:
-                    # Determine if it is a Success or Warning sheet
-                    is_warning = page.locator('div.sheet .text-warning, div.sheet .lexicon-icon-warning-full').count() > 0
-                    
                     # Extract the main result heading dynamically (using the exact class from the dump)
                     heading = "Import Succeeded"
                     heading_el = page.locator('div.sheet .text-success, div.sheet .text-warning').first
@@ -167,9 +186,8 @@ def automate_ui_import(host, email, password, zipped_files):
                         return True
                 
                 # Check for standard error alerts
-                danger_alert = page.locator('.alert-danger, .clay-alert-danger, .alert-warning').first
-                if danger_alert.count() > 0:
-                    print(f"\n❌  [ERROR] [{collection_name}] Import failed!\n" + "-"*80 + f"\n{danger_alert.inner_text().strip()}\n" + "="*80 + "\n")
+                if status_descriptor == "failure":
+                    print(f"\n❌  [ERROR] [{collection_name}] Import failed!\n" + "-"*80 + f"\n{error_msg}\n" + "="*80 + "\n")
                     return False
                 else:
                     print(f"[{collection_name}] Fragment Set imported successfully!")
