@@ -17,14 +17,15 @@ def get_client_extensions_dir():
     return None
 
 def find_gradle_built_zip(project_path):
-    """Searches the project's dist/ and build/ directories for any Gradle-built client-extension ZIP files."""
-    for folder in ['dist', 'build']:
-        target_dir = os.path.join(project_path, folder)
-        if os.path.exists(target_dir):
-            for root, _, files in os.walk(target_dir):
-                for file in files:
-                    if file.endswith('.zip'):
-                        return os.path.join(root, file)
+    """Searches the project's dist/ directory for Gradle-built client-extension ZIP files."""
+    dist_dir = os.path.join(project_path, 'dist')
+    if not os.path.exists(dist_dir):
+        return None
+        
+    for root, _, files in os.walk(dist_dir):
+        for file in files:
+            if file.endswith('.zip'):
+                return os.path.join(root, file)
     return None
 
 def main():
