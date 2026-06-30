@@ -48,9 +48,9 @@ This script automates compiling, packaging, and hot-deploying Client Extensions 
     ```
 *   **Actions Performed:**
     1. Scan `./liferay/client-extensions/` for folders containing `client-extension.yaml`.
-    2. For React/Node-based client extensions, run `npm install` and `npm run build` locally.
-    3. Package the static build assets or configuration batch files into Liferay-compatible ZIP archives.
-    4. Copy the ZIP files into LDM's hot-deploy path: `./client-extensions/`.
+    2. Trigger Liferay's native Gradle wrapper build (**`gradlew clean build`**) inside `./liferay/` to compile Node/React assets and bundle them into 100% compliant LUFFA archives.
+    3. Dynamically search each extension subproject's `build/` folder for the compiled `.zip` file.
+    4. Copy the found, Gradle-built ZIP files into LDM's root hot-deploy path: `./client-extensions/`.
     5. Programmatically trigger **`ldm deploy`** to synchronize built assets and refresh the active container stack!
 
 ---
