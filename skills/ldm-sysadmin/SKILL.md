@@ -29,6 +29,14 @@ Always execute these workflows directly from the active project root workspace d
     ```
 *   **Verification:** Confirm that a clean success or non-blocking warning block is printed to `stdout`.
 
+### 3. Client Extensions Deployment
+*   **Action:** Compile and package local React/Node-based or static client extensions, and hot-deploy them inside the active LDM container stack.
+*   **Workflow:** Run the localized compilation and hot-deploy packaging script:
+    ```bash
+    python scripts/deploy-client-extensions.py
+    ```
+*   **Verification:** Confirm that the packaging completes and triggers `ldm deploy` successfully, outputting `"All Liferay Client Extensions deployed and synchronized successfully!"` to stdout.
+
 ---
 
 ## 📊 Deployment Visual Receipts (Visual Audit)

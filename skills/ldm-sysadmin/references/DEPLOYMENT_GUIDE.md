@@ -1,6 +1,6 @@
 # Guide: LDM System Administration & Deployment Feedback
 
-This reference guide provides deep, real-world domain knowledge and feedback interpretations for automating Liferay DXP Page Fragment and Style Book deployments inside local Liferay Docker Manager (LDM) stacks.
+This reference guide provides deep, real-world domain knowledge and feedback interpretations for automating Liferay DXP Page Fragment, Style Book, and Client Extension deployments inside local Liferay Docker Manager (LDM) stacks.
 
 ---
 
@@ -37,6 +37,21 @@ This script automates compiling, packaging, and importing Style Book files into 
        `{LIFERAY_HOST}/group/{site}/~/control_panel/manage/-/style_books/style_books`
     4. Click Liferay's global Control Menu header Actions button and select standalone Import, bypassing "Export / Import".
     5. Upload the ZIP, submit inside the iframe, capture a standardized visual receipt of the alerts, and close.
+
+### 3. Client Extensions Deployer (`deploy-client-extensions.py`)
+This script automates compiling, packaging, and hot-deploying Client Extensions directly inside LDM container stacks.
+
+*   **Location:** `./scripts/deploy-client-extensions.py`
+*   **Execution Command:**
+    ```bash
+    python scripts/deploy-client-extensions.py
+    ```
+*   **Actions Performed:**
+    1. Scan `./liferay/client-extensions/` for folders containing `client-extension.yaml`.
+    2. For React/Node-based client extensions, run `npm install` and `npm run build` locally.
+    3. Package the static build assets or configuration batch files into Liferay-compatible ZIP archives.
+    4. Copy the ZIP files into LDM's hot-deploy path: `./client-extensions/`.
+    5. Programmatically trigger **`ldm deploy`** to synchronize built assets and refresh the active container stack!
 
 ---
 
