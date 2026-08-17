@@ -1,6 +1,6 @@
 {
   "name": "liferay-demo-agents",
-  "version": "0.2.3-dev",
+  "version": "1.0.0-dev",
   "description": "Liferay Demo Builder & Orchestrator with Blade CLI and Liferay Docker Manager (LDM).",
   "migratedTo": "https://github.com/lr-timbraun/liferay-demo-agents",
   "contextFileName": "GEMINI.md",
@@ -13,7 +13,8 @@
       ],
       "cwd": "${extensionPath}",
       "env": {
-        "WORKSPACE_PATH": "${workspacePath}"
+        "WORKSPACE_PATH": "${workspacePath}",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
       },
       "timeout": 60000
     }

@@ -186,6 +186,10 @@ def main():
     
     parser = argparse.ArgumentParser(description="Liferay Style Books Deployer Script")
     parser.add_argument('--site', default='guest', help="The friendly URL path of the target Site (default: 'guest')")
+    parser.add_argument('--host', help="Liferay DXP host URL")
+    parser.add_argument('--email', help="Admin email prefix/address")
+    parser.add_argument('--password', help="Admin password")
+    parser.add_argument('--dry-run', action='store_true', help="Package and validate stylebooks but skip browser deployment")
     args = parser.parse_args()
     
     # Clean up site path (remove leading/trailing slashes)
@@ -193,7 +197,7 @@ def main():
     
     sb_dir = get_stylebooks_dir()
     if not sb_dir:
-        print("Error: Could not find 'liferay/stylebooks/' directory. Please run this from the project root.")
+        print("Error: Could not find 'liferay/stylebooks/' directory. Please run this from the project root.", file=sys.stderr)
         sys.exit(1)
         
     # 1. Scan for subdirectories containing 'style-book.json'
@@ -221,13 +225,17 @@ def main():
             success = False
             
     if not success or not zipped_files:
-        print("\nError: One or more Style Books failed packaging.")
+        print("\nError: One or more Style Books failed packaging.", file=sys.stderr)
         sys.exit(1)
         
-    # 4. Resolve Liferay Host & Credentials and Automate Frontend Import via Playwright
-    email = env_utils.get_admin_email()
-    password = env_utils.get_admin_password()
-    host = env_utils.get_host()
+    if args.dry_run:
+        print("\n[DRY RUN] Packaging and validation completed successfully. Skipping live deployment.")
+        sys.exit(0)
+        
+    # Fall back to env_utils if not passed via CLI
+    host = args.host or env_utils.get_host()
+    email = args.email or env_utils.get_admin_email()
+    password = args.password or env_utils.get_admin_password()
     
     try:
         import_ok = automate_ui_import(host, email, password, site_path, zipped_files)
@@ -235,10 +243,10 @@ def main():
             print("\nStyle Books deployed and imported into target Site successfully!")
             sys.exit(0)
         else:
-            print("\nError: Playwright automation failed to import Style Books.")
+            print("\nError: Playwright automation failed to import Style Books.", file=sys.stderr)
             sys.exit(1)
     except Exception as e:
-        print(f"\nError: Automation failed during execution: {e}")
+        print(f"\nError: Automation failed during execution: {e}", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == '__main__':

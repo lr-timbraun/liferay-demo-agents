@@ -1,0 +1,24 @@
+assemble:
+    - from: build/static
+      into: static
+
+react-custom-element-boilerplate:
+    name: React Custom Element Boilerplate
+    type: customElement
+    friendlyURLMapping: react-custom-element-boilerplate
+    htmlElementName: react-custom-element-boilerplate
+    instanceable: true
+    oAuth2ApplicationExternalReferenceCode: react-boilerplate-oauth-user
+    portletCategoryName: category.client-extensions
+    urls:
+        - js/main.*.js
+    cssUrls:
+        - css/main.*.css
+    useESM: true
+
+react-boilerplate-oauth-user:
+    name: React Boilerplate OAuth User Agent
+    type: oAuthApplicationUserAgent
+    homePageURL: http://localhost:8080
+    scopes:
+        - Liferay.Object.REST.everything

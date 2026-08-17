@@ -3,16 +3,16 @@ description = "Resume demo development inside an already configured Liferay Demo
 prompt = """
 Please execute the Liferay Demo Agents Resume Protocol for the current project:
 
-1. Perform Step 1: Verify Core Tooling & Check Updates
+1. Verify Core Tooling & Check Updates:
    - **Blade CLI:** Run `blade version` to get the current version. If the output indicates a newer version is available, you MUST explicitly ask the user for permission (using `ask_user`) before running `blade update`.
    - **Liferay Docker Manager (LDM):** Run `ldm --version` to get the current version. If LDM is out of date, you MUST explicitly ask the user for permission (using `ask_user`) before running `ldm upgrade`.
    - **Python Availability:** Run `python --version`. Ensure the active version is **Python 3.10 or higher** to support LDM's internal handlers, Playwright testing, and automated Python helpers.
-   - **LDA Version Verification:** Run the scaffolding script in check-version mode: `python scripts/scaffold-workspace.py --mode check-version`. If it outputs a version mismatch warning, display the warning clearly to the user, recommend running the `/lda:project-upgrade` command, and explicitly ask them if they want to proceed with the upgrade before continuing with the container boots.
 
-2. Configuration & MCP Activation Check:
-   - Verify and read the local `.env` file in the current directory (recovering `LIFERAY_HOST` and active agent admin credentials).
-   - Check the `./files/portal-ext.properties` file in the project.
-   - Verify if it contains the setting `feature.flag.LPD-63311=true`. If missing or set to `false`, add or update it to `feature.flag.LPD-63311=true` to ensure the Liferay MCP Server is activated.
+2. Automated Workspace Refresh & Self-Healing (Unified):
+   - Resolve the extension's root directory `<extension_dir>` from the `<location>` of any active skill in your system prompt (such as the `ldm-sysadmin` skill).
+   - Run the unified scaffolding helper directly from the extension's `scripts/` directory to automatically verify existing portal-ext properties, configure Liferay MCP Server activation flags, recreate any missing specs folders, standard `DEMO_PLAN.md` template, generate `./GEMINI.md` with the "Zero-Direct-Code" mandate, generate/verify the `.env` file, and update the `lda.properties` version tracker instantly:
+     `python "<extension_dir>/scripts/scaffold-workspace.py" --mode activate`
+   - Read the local verified `.env` file to recover the `LIFERAY_HOST` and active agent admin credentials.
 
 3. Active Container Check & Boot Stack (Synchronous):
    - First, check if the project containers are already running by executing `ldm status` or checking if the `<LIFERAY_HOST>` URL is already responsive and healthy.

@@ -4,19 +4,24 @@ This guide provides the implementation patterns for programmatically generating 
 
 ## Core API Details
 - **Endpoint:** `POST /o/c/{objectPluralName}/`
-- **Auth:** Basic Auth (using credentials from `.env`).
+- **Auth:** Basic Auth (using credentials resolved securely via `env_utils`).
 
 ## Implementation Pattern (Python)
 
 ```python
+import sys
 import os
 import requests
 import json
 
-# Setup from .env
-email = os.environ.get("LIFERAY_ADMIN_EMAIL_ADDRESS")
-password = os.environ.get("LIFERAY_ADMIN_PASSWORD")
-host = os.environ.get("LIFERAY_HOST", "http://localhost:8080")
+# Add scripts directory to path and import env_utils
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'scripts')))
+import env_utils
+
+# Setup from env_utils
+email = env_utils.get_admin_email()
+password = env_utils.get_admin_password()
+host = env_utils.get_host()
 
 def create_entry(plural_name, entry_data):
     url = f"{host}/o/c/{plural_name}/"

@@ -4,15 +4,17 @@ This reference guide provides deep, real-world domain knowledge and feedback int
 
 ---
 
-## 🚀 Execution & Command Reference
+## Execution & Command Reference
+
+To run these deployment scripts from your project workspace root, resolve the skill's directory path (`<skill_dir>`) from the `<location>` of this skill (`ldm-sysadmin`) in your system prompt.
 
 ### 1. Page Fragments Deployer (`deploy-fragments.py`)
 This script automates compiling, packaging, and importing Page Fragment collections into the Global Site using Playwright RPA.
 
-*   **Location:** `./scripts/deploy-fragments.py`
+*   **Location:** `<skill_dir>/scripts/deploy-fragments.py`
 *   **Execution Command:**
     ```bash
-    python scripts/deploy-fragments.py
+    python <skill_dir>/scripts/deploy-fragments.py
     ```
 *   **Actions Performed:**
     1. Scan `./liferay/fragments/` for collections containing `collection.json`.
@@ -25,10 +27,10 @@ This script automates compiling, packaging, and importing Page Fragment collecti
 ### 2. Style Books Deployer (`deploy-stylebook.py`)
 This script automates compiling, packaging, and importing Style Book files into a target Liferay Site.
 
-*   **Location:** `./scripts/deploy-stylebook.py`
+*   **Location:** `<skill_dir>/scripts/deploy-stylebook.py`
 *   **Execution Command (with site Friendly URL path):**
     ```bash
-    python scripts/deploy-stylebook.py --site guest
+    python <skill_dir>/scripts/deploy-stylebook.py --site guest
     ```
 *   **Actions Performed:**
     1. Scan `./liferay/stylebooks/` for folders containing `style-book.json`.
@@ -41,21 +43,21 @@ This script automates compiling, packaging, and importing Style Book files into 
 ### 3. Client Extensions Deployer (`deploy-client-extensions.py`)
 This script automates compiling, packaging, and hot-deploying Client Extensions directly inside LDM container stacks.
 
-*   **Location:** `./scripts/deploy-client-extensions.py`
+*   **Location:** `<skill_dir>/scripts/deploy-client-extensions.py`
 *   **Execution Command:**
     ```bash
-    python scripts/deploy-client-extensions.py
+    python <skill_dir>/scripts/deploy-client-extensions.py
     ```
 *   **Actions Performed:**
     1. Scan `./liferay/client-extensions/` for folders containing `client-extension.yaml`.
-    2. Trigger Liferay's native Gradle wrapper build (**`gradlew clean build`**) inside `./liferay/` to compile Node/React assets and bundle them into 100% compliant LUFFA archives.
+    2. Trigger Liferay's native Gradle wrapper build (`gradlew clean build`) inside `./liferay/` to compile Node/React assets and bundle them into 100% compliant LUFFA archives.
     3. Dynamically search each extension subproject's `build/` folder for the compiled `.zip` file.
     4. Copy the found, Gradle-built ZIP files into LDM's root hot-deploy path: `./client-extensions/`.
-    5. Programmatically trigger **`ldm deploy`** to synchronize built assets and refresh the active container stack!
+    5. Programmatically trigger `ldm deploy` to synchronize built assets and refresh the active container stack!
 
 ---
 
-## 📊 Standardized Visual Audit Receipts
+## Standardized Visual Audit Receipts
 
 All automated imports write high-resolution screenshot receipts to document successful execution and surface warning alerts visually.
 
@@ -77,22 +79,22 @@ receipt_{resource_type}_{resource_name}_{YYYYMMDD_HHMMSS}_{status_descriptor}.pn
 
 ---
 
-## 🔍 Understanding & Handling Liferay DXP Feedback
+## Understanding & Handling Liferay DXP Feedback
 
 Through active live-test experiences, we have mapped Liferay DXP's response layouts and how to handle them cleanly:
 
 ### 1. Duplication Conflicts ("Manage Existing Items")
 *   **DXP Behavior:** When importing a fragment set that already exists in the list, Liferay opens a centered `"Manage Existing Items"` modal overlay asking the user to choose an action.
-*   **Script Handling:** The deployer script actively monitors for this modal. It selects the language-independent radio option **`value="overwrite"`** and clicks **`Save`** inside the modal footer to cleanly overwrite the items.
-*   **Receipt Capture:** To avoid capturing a semi-transparent, ugly fading backdrop overlay, the script waits for `.modal-dialog` and `.modal-backdrop` to be completely hidden (`state="hidden"`) with a `1000ms` safety pause before snapping the screenshot.
+*   **Script Handling:** The deployer script actively monitors for this modal. It selects the language-independent radio option `value="overwrite"` and clicks `Save` inside the modal footer to cleanly overwrite the items.
+*   **Receipt Capture:** To avoid capturing a semi-transparent, fading backdrop overlay, the script waits for `.modal-dialog` and `.modal-backdrop` to be completely hidden (`state="hidden"`) with a `1000ms` safety pause before snapping the screenshot.
 
 ### 2. Theme Mismatch Warnings (`.alert-warning`)
 *   **DXP Behavior:** When importing a Style Book, Liferay DXP compares the Style Book's target SASS variables with the active theme of your site. If they differ (e.g., Style Book targets Classic `classic_WAR_classictheme` but the site runs a custom theme), Liferay displays a yellow warning alert:
     > `"warning:One or more of the style books are based on a theme that is different from the site's default theme..."`
 *   **Crucial Knowledge:** **This warning is NOT a critical failure.** Liferay actually completes the import successfully and registers the Style Book!
-*   **Script Handling:** The deployer parses this and logs it as a non-blocking `⚠️ [WARNING]` block, but allows the script to succeed and exit with code `0`.
+*   **Script Handling:** The deployer parses this and logs it as a non-blocking `[WARNING]` block, but allows the script to succeed and exit with code `0`.
 *   **Receipt Capture:** Captured **immediately inside the iframe modal** while the warning alert is fully displayed on screen, preserving the visual audit of the warning.
 
 ### 3. Critical Failures (`.alert-danger`)
 *   **DXP Behavior:** Hard failures (like syntax errors inside JSON schemas, missing properties, or database constraint violations) are surfaced in red `.alert-danger` or `.clay-alert-danger` boxes.
-*   **Script Handling:** The deployer intercepts these, extracts the raw DXP validation error text, outputs a detailed `❌ [ERROR]` box to stdout, and terminates with exit code `1` (fail) to trigger self-healing or alert the executing agent.
+*   **Script Handling:** The deployer intercepts these, extracts the raw DXP validation error text, outputs a detailed `[ERROR]` box to stdout, and terminates with exit code `1` (fail) to trigger self-healing or alert the executing agent.

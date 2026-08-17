@@ -24,7 +24,7 @@ You MUST NOT attempt to write Object creation or population scripts from memory.
 - **Contract Compliance:** You MUST strictly adhere to the field names and data types specified in the spec to ensure interoperability with related Fragments.
 
 ### 2. Implementation Preparation
-- **Credentials:** You MUST use the `LIFERAY_ADMIN_EMAIL_ADDRESS` and `LIFERAY_ADMIN_PASSWORD` from the local `.env` file for all API-driven scripts.
+- **Credentials:** You MUST NOT read or parse the local `.env` file directly. You MUST import and use the `env_utils` script (`get_host()`, `get_admin_email()`, `get_admin_password()`) to securely resolve credentials and host URLs for all scripts.
 - **Python Setup:** Ensure the `requests` library is installed (`pip install requests`).
 
 ### 3. Implementation: API-Driven Workflow

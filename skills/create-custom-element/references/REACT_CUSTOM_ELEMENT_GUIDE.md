@@ -21,7 +21,7 @@ client-extensions/[project-name]/
 Use `react-scripts` for a reliable build process that Liferay Workspace can easily bundle.
 ```json
 {
-  "name": "my-react-app",
+  "name": "my-react-form",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -39,18 +39,19 @@ Use `react-scripts` for a reliable build process that Liferay Workspace can easi
 ### `client-extension.yaml`
 Key requirements:
 - **Assemble**: Must pull from `build/static` (CRA default) and place `into: static`.
-- **URLs**: Use glob patterns (`js/main.*.js`) because CRA appends hashes to filenames.
+- **URLs**: Use glob patterns (`main.*.js`) because CRA appends hashes to filenames.
+- **Home Page URL**: Must include the protocol (e.g., `http://localhost:8080`) to avoid `NullPointerException` in Liferay's interpolation plugin.
 
 ```yaml
 assemble:
     - from: build/static
       into: static
 
-my-react-app:
-    name: My React App
+my-react-form:
+    name: My React Form
     type: customElement
-    friendlyURLMapping: my-react-app
-    htmlElementName: my-react-app
+    friendlyURLMapping: my-react-form
+    htmlElementName: my-react-form
     instanceable: true
     oAuth2ApplicationExternalReferenceCode: my-oauth-user
     portletCategoryName: category.client-extensions
@@ -68,8 +69,24 @@ my-oauth-user:
         - Liferay.Object.REST.everything
 ```
 
+### `public/index.html`
+A valid HTML5 shell is mandatory for `react-scripts build` to pass minification.
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>React Form</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
 ## 3. React Source (`src/index.js`)
 - **Global Liferay**: Use `/* global Liferay */` to satisfy ESLint.
+- **Custom Element**: Define the element using the `htmlElementName` from the YAML.
 - **Cleanup**: Implement `disconnectedCallback` to unmount the React root.
 
 ```javascript
@@ -98,8 +115,14 @@ class MyCustomElement extends HTMLElement {
     }
 }
 
-const ELEMENT_ID = 'my-react-app';
+const ELEMENT_ID = 'my-react-form';
 if (!customElements.get(ELEMENT_ID)) {
     customElements.define(ELEMENT_ID, MyCustomElement);
 }
 ```
+
+## 4. Key Troubleshooting Lessons
+1. **404 Errors**: Usually caused by mismatched `assemble` paths or missing `static/` prefixes in `urls`.
+2. **Unexpected token '<'**: Occurs when Liferay serves the untranspiled `src/index.js` (JSX) instead of the compiled bundle. Check the `assemble` source directory.
+3. **Build Failures**: `react-scripts` is stricter than `liferay-npm-scripts` regarding global variables (ESLint) and HTML validity.
+4. **Project Grouping**: `frontend` and `batch` client extensions should be in separate projects to avoid Workspace SDK grouping constraints.

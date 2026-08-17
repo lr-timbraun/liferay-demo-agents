@@ -33,10 +33,15 @@ def main():
     print("     Liferay Client Extensions Deployer Script      ")
     print("====================================================")
     
+    import argparse
+    parser = argparse.ArgumentParser(description="Liferay Client Extensions Deployer Script")
+    parser.add_argument('--dry-run', action='store_true', help="Scan extensions and validate build tool availability but skip compilation and deployment")
+    args = parser.parse_args()
+    
     workspace_dir = get_workspace_dir()
     cx_dir = get_client_extensions_dir()
     if not cx_dir:
-        print("Error: Could not find 'liferay/client-extensions/' directory. Please run this from the project root.")
+        print("Error: Could not find 'liferay/client-extensions/' directory. Please run this from the project root.", file=sys.stderr)
         sys.exit(1)
         
     # 1. Scan custom client extensions
@@ -46,6 +51,10 @@ def main():
         sys.exit(0)
         
     print(f"Found {len(projects)} client extension(s): {', '.join(projects)}")
+    
+    if args.dry_run:
+        print("\n[DRY RUN] Scan completed successfully. Skipping Gradle compilation and hot-deployment.")
+        sys.exit(0)
     
     # 2. Trigger Gradle clean build inside the Liferay Workspace
     print("\n--- Triggering Liferay Workspace Gradle Build ---")
@@ -62,8 +71,8 @@ def main():
         subprocess.run([gradle_cmd, 'clean', 'build'], cwd=liferay_dir, shell=use_shell, check=True)
         print("Liferay Workspace Gradle Build completed successfully!")
     except subprocess.CalledProcessError as e:
-        print(f"\n❌  [ERROR] Liferay Workspace Gradle Build failed: {e}")
-        print("Aborting hot-deploy to prevent deploying incomplete/broken assets.")
+        print(f"\n❌  [ERROR] Liferay Workspace Gradle Build failed: {e}", file=sys.stderr)
+        print("Aborting hot-deploy to prevent deploying incomplete/broken assets.", file=sys.stderr)
         sys.exit(1)
         
     # 3. Locate built ZIP files and copy them to LDM hot-deploy directory
@@ -82,10 +91,10 @@ def main():
             shutil.copy2(built_zip, dest_zip)
             deploy_count += 1
         else:
-            print(f"⚠️  [WARNING] Could not find any Gradle-built ZIP output inside {project_path}/build/")
+            print(f"⚠️  [WARNING] Could not find any Gradle-built ZIP output inside {project_path}/build/", file=sys.stderr)
             
     if deploy_count == 0:
-        print("\n❌  [ERROR] No compiled client extension ZIP files were found to deploy.")
+        print("\n❌  [ERROR] No compiled client extension ZIP files were found to deploy.", file=sys.stderr)
         sys.exit(1)
         
     # 4. Trigger LDM Deploy to sync and refresh the active stack
@@ -96,7 +105,7 @@ def main():
         print("\nAll Liferay Client Extensions deployed and synchronized successfully!")
         sys.exit(0)
     except subprocess.CalledProcessError as e:
-        print(f"\n❌  [ERROR] LDM Deploy command failed: {e}")
+        print(f"\n❌  [ERROR] LDM Deploy command failed: {e}", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == '__main__':

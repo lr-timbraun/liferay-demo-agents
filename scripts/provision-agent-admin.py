@@ -9,15 +9,9 @@ import string
 import urllib.request
 import urllib.error
 
-def get_env_path():
-    """Finds the .env file by searching upwards from the current directory."""
-    current_dir = os.path.abspath(os.getcwd())
-    while current_dir != os.path.dirname(current_dir):
-        env_path = os.path.join(current_dir, '.env')
-        if os.path.exists(env_path):
-            return env_path
-        current_dir = os.path.dirname(current_dir)
-    return os.path.join(os.path.abspath(os.getcwd()), '.env')
+# Add scripts directory to path to ensure env_utils import succeeds
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import env_utils
 
 def generate_secure_password(length=16):
     """Generates a secure password containing uppercase, lowercase, digits, and punctuation."""
@@ -64,26 +58,15 @@ def make_request(url, payload=None, method='GET', auth_header=None):
 def main():
     parser = argparse.ArgumentParser(description="Provision a dedicated Liferay administrator account for AI Agent use.")
     parser.add_argument('--host', help="Liferay host URL (e.g. https://localhost)")
-    parser.add_argument('--default-email', required=True, help="Default administrator email address")
-    parser.add_argument('--default-password', required=True, help="Default administrator password")
+    parser.add_argument('--default-email', help="Default administrator email address")
+    parser.add_argument('--default-password', help="Default administrator password")
     parser.add_argument('--agent-email', default="shirley.temple@liferay.com", help="AI Agent admin email address")
     parser.add_argument('--agent-password', help="AI Agent secure password (generated automatically if omitted)")
     
     args = parser.parse_args()
     
-    host = args.host
-    if not host:
-        # Fallback to reading host from .env
-        env_path = get_env_path()
-        if os.path.exists(env_path):
-            with open(env_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    if line.strip().startswith('LIFERAY_HOST='):
-                        host = line.strip().split('=', 1)[1].strip()
-                        break
-        if not host:
-            print("Error: LIFERAY_HOST is not defined in .env and no --host was provided.")
-            sys.exit(1)
+    # Resolve host and default credentials using env_utils
+    host = args.host or env_utils.get_host()
             
     # Always ensure it is https:// (No HTTP allowed, HTTPS by default)
     if host.startswith('http://'):
@@ -92,8 +75,9 @@ def main():
         host = "https://" + host
             
     host = host.rstrip('/')
-    default_email = args.default_email
-    default_password = args.default_password
+    
+    default_email = args.default_email or env_utils.get_admin_email()
+    default_password = args.default_password or env_utils.get_admin_password()
     agent_email = args.agent_email
     
     agent_password = args.agent_password
@@ -138,7 +122,7 @@ def main():
             "password": agent_password
         }
         code, res = make_request(create_url, payload=payload, method='POST', auth_header=default_auth_header)
-        if code == 201:
+        if code in (200, 201):
             user_id = res.get('id')
             print(f"Agent user created successfully! User ID: {user_id}")
         elif code == 409: # Conflict
@@ -193,21 +177,8 @@ def main():
         sys.exit(1)
     print("Verification successful! Dedicated agent admin account is functional.")
 
-    # 6b. Verify Liferay MCP Server is available
-    print("Verifying Liferay MCP Server is active and available at /o/mcp...")
-    mcp_url = f"{host}/o/mcp"
-    mcp_code, mcp_res = make_request(mcp_url, auth_header=agent_auth_header)
-    
-    # Standard Liferay MCP Server returns HTTP 400 when GET requested without SSE headers,
-    # or HTTP 200/204 when active. Any code in (200, 204, 400) proves the servlet is listening!
-    if mcp_code not in (200, 204, 400):
-        print(f"Error: Liferay MCP Server is NOT active at /o/mcp (HTTP {mcp_code}).")
-        print("  👉 Please verify that 'feature.flag.LPD-63311=true' is set in 'files/portal-ext.properties'!")
-        sys.exit(1)
-    print("Liferay MCP Server verification successful! Server is responsive and listening.")
-
     # 7. Overwrite/update local .env file
-    env_path = get_env_path()
+    env_path = env_utils.get_env_path() or './.env'
     print(f"Saving agent admin credentials to {env_path}...")
     
     # Read existing env and rewrite with new agent credentials
@@ -217,23 +188,110 @@ def main():
             for line in f:
                 line_stripped = line.strip()
                 if line_stripped.startswith('LIFERAY_ADMIN_EMAIL_ADDRESS='):
-                    env_lines.append(f"LIFERAY_ADMIN_EMAIL_ADDRESS={agent_email}\n")
+                    env_lines.append(f"LIFERAY_ADMIN_EMAIL_ADDRESS={agent_email}" + os.linesep)
                 elif line_stripped.startswith('LIFERAY_ADMIN_PASSWORD='):
-                    env_lines.append(f"LIFERAY_ADMIN_PASSWORD={agent_password}\n")
+                    env_lines.append(f"LIFERAY_ADMIN_PASSWORD={agent_password}" + os.linesep)
                 else:
                     env_lines.append(line)
     else:
         env_lines = [
-            f"LIFERAY_HOST={host}\n",
-            f"LIFERAY_ADMIN_EMAIL_ADDRESS={agent_email}\n",
-            f"LIFERAY_ADMIN_PASSWORD={agent_password}\n"
+            f"LIFERAY_HOST={host}" + os.linesep,
+            f"LIFERAY_ADMIN_EMAIL_ADDRESS={agent_email}" + os.linesep,
+            f"LIFERAY_ADMIN_PASSWORD={agent_password}" + os.linesep
         ]
         
     with open(env_path, 'w', encoding='utf-8') as f:
         f.writelines(env_lines)
-        
     print("Credentials saved successfully.")
-    print("AI Agent Admin Provisioning Complete!")
+
+    # 8. Verify the Liferay API Proxy MCP Server is active and communicating over JSON-RPC stdio
+    import subprocess
+    print("Verifying Liferay API Proxy MCP Server is active and available...")
+    
+    extension_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    index_path = os.path.join(extension_dir, 'index.js')
+    
+    if not os.path.exists(index_path):
+        print(f"Error: MCP Proxy script not found at {index_path}")
+        sys.exit(1)
+        
+    # Build environment containing WORKSPACE_PATH set to active CWD
+    env = os.environ.copy()
+    env['WORKSPACE_PATH'] = os.getcwd()
+    env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
+    
+    try:
+        proc = subprocess.Popen(
+            ['node', index_path],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=env
+        )
+        
+        # A. Send standard MCP 'initialize' JSON-RPC message
+        init_req = json.dumps({
+            "jsonrpc": "2.0",
+            "method": "initialize",
+            "params": {
+                "protocolVersion": "2024-11-05",
+                "capabilities": {},
+                "clientInfo": {"name": "scaffold-verifier", "version": "1.0.0"}
+            },
+            "id": 1
+        }) + "\n"
+        
+        proc.stdin.write(init_req)
+        proc.stdin.flush()
+        
+        init_res_line = proc.stdout.readline()
+        init_res = json.loads(init_res_line)
+        
+        if 'error' in init_res:
+            print(f"Error: MCP Proxy initialization failed: {init_res['error'].get('message')}")
+            sys.exit(1)
+            
+        # B. Send standard MCP 'tools/call' JSON-RPC message to execute 'liferay_get_openapis'
+        call_req = json.dumps({
+            "jsonrpc": "2.0",
+            "method": "tools/call",
+            "params": {
+                "name": "liferay_get_openapis",
+                "arguments": {}
+            },
+            "id": 2
+        }) + "\n"
+        
+        proc.stdin.write(call_req)
+        proc.stdin.flush()
+        
+        call_res_line = proc.stdout.readline()
+        call_res = json.loads(call_res_line)
+        
+        # Close the subprocess cleanly
+        proc.terminate()
+        
+        if 'error' in call_res:
+            print(f"Error: MCP Proxy failed to execute tool: {call_res['error'].get('message')}")
+            sys.exit(1)
+            
+        # Parse the content returned by 'liferay_get_openapis'
+        content = call_res.get('result', {}).get('content', [])
+        if content and content[0].get('type') == 'text':
+            text_val = content[0].get('text', '')
+            # A successful response from the proxy includes standard OpenAPI categories/links
+            if "headless-delivery" in text_val or "headless-admin-user" in text_val or "services" in text_val:
+                print("Liferay API Proxy verification successful! Proxy is active, authenticated, and communicating.")
+                print("AI Agent Admin Provisioning Complete!")
+                return
+                
+        print("Error: MCP Proxy returned an unexpected response schema during verification.")
+        sys.exit(1)
+        
+    except Exception as e:
+        print(f"Error: Failed to verify connection via MCP Proxy: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
