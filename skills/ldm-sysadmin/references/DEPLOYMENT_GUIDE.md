@@ -66,7 +66,7 @@ All automated imports write high-resolution screenshot receipts to document succ
     **`./liferay/dist/receipts/`**
 
 ### File Naming Convention:
-```text
+```
 receipt_{resource_type}_{resource_name}_{YYYYMMDD_HHMMSS}_{status_descriptor}.png
 ```
 *   **`resource_type`:** `fragments` or `stylebook`
