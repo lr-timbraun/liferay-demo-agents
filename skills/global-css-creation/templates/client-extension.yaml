@@ -1,0 +1,9 @@
+assembleHeaderLanguageKey: my-css-extensions-header
+assembleHeaderLanguageValue: My CSS Client Extension
+dxp.api.version: "7.4"
+
+my-css-extension:
+    name: Custom Global Theme Overrides
+    type: globalCSS
+    urls:
+        - custom.css

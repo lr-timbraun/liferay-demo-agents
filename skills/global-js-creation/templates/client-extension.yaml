@@ -1,0 +1,9 @@
+assembleHeaderLanguageKey: my-js-extensions-header
+assembleHeaderLanguageValue: My JS Client Extension
+dxp.api.version: "7.4"
+
+my-js-extension:
+    name: Custom Global JS Overrides
+    type: globalJS
+    urls:
+        - custom.js

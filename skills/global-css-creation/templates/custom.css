@@ -1,0 +1,10 @@
+/* Custom global theme override stylesheet */
+body {
+    background-color: var(--body-bg, #ffffff);
+    color: var(--body-color, #212529);
+}
+
+.btn-primary {
+    border-radius: var(--border-radius, 4px);
+    transition: all 0.3s ease-in-out;
+}
