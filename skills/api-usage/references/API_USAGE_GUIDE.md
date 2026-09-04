@@ -8,7 +8,7 @@ This reference guide details standard HTTP headers and endpoints required to sec
 
 All API requests must pass basic or OAuth2 bearer authorization tokens loaded from the active profile:
 
-```text
+```
 Authorization: Basic admin-user-credentials
 Accept: application/json
 Content-Type: application/json
