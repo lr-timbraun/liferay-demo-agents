@@ -29,7 +29,7 @@ You MUST NOT attempt to build fragments from memory. You MUST use the `read_file
 - **Collection Metadata:** Every collection folder MUST contain a `collection.json` file defining the set's name and description.
 - **Fragments Subdirectory:** All individual fragments MUST be stored within a `fragments/` subfolder of the collection folder.
 - **Mandatory Hierarchy Pattern:**
-  ```text
+  ```
   {collection-name}/
   ├── collection.json
   └── fragments/
