@@ -1,0 +1,42 @@
+{
+  "name": "Standard Article Structure",
+  "description": "Standard structure representing a text and image based editorial content element.",
+  "contentStructureFields": [
+    {
+      "dataType": "string",
+      "inputControl": "text",
+      "label": {
+        "en_US": "Headline"
+      },
+      "name": "headline",
+      "required": true
+    },
+    {
+      "dataType": "string",
+      "inputControl": "rich_text",
+      "label": {
+        "en_US": "Content Body"
+      },
+      "name": "contentBody",
+      "required": true
+    },
+    {
+      "dataType": "image",
+      "inputControl": "image",
+      "label": {
+        "en_US": "Feature Image"
+      },
+      "name": "featureImage",
+      "required": false
+    },
+    {
+      "dataType": "boolean",
+      "inputControl": "checkbox",
+      "label": {
+        "en_US": "Highlight Banner"
+      },
+      "name": "highlightBanner",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+# Liferay Client Extension Descriptor
+# Defines Object Action and Workflow Action integrations
+
+assembleHeaderLanguageKey: my-microservice-header
+assembleHeaderLanguageValue: My Microservice
+dxp.api.version: "7.4"
+
+# Define REST providers / Object Actions
+my-object-action:
+    name: My Object Action Webhook
+    type: objectAction
+    url: /object-action
+    # Map to the target Object
+    objectDefinitionKey: C_MyObject
+
+# Define REST providers / Workflow Actions
+my-workflow-action:
+    name: My Workflow Action Webhook
+    type: workflowAction
+    url: /workflow-action

@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<workflow-definition
+    xmlns="http://liferay.com/xml/kaleo-web_7_4_0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://liferay.com/xml/kaleo-web_7_4_0 http://www.liferay.com/dtd/liferay-kaleo-web_7_4_0.xsd"
+>
+    <name>Standard Demo Approval</name>
+    <description>A reliable, multi-stage approval workflow tailored for board-room demonstrations.</description>
+    <version>1</version>
+
+    <!-- Initial State -->
+    <state>
+        <name>created</name>
+        <metadata>
+            <![CDATA[{"xy": [100, 100]}]]>
+        </metadata>
+        <initial>true</initial>
+        <transitions>
+            <transition>
+                <name>submit-for-review</name>
+                <target>review-task</target>
+                <default>true</default>
+            </transition>
+        </transitions>
+    </state>
+
+    <!-- Active Review Task -->
+    <task>
+        <name>review-task</name>
+        <metadata>
+            <![CDATA[{"xy": [300, 100]}]]>
+        </metadata>
+        <assignments>
+            <roles>
+                <role>
+                    <role-type>regular</role-type>
+                    <name>Administrator</name>
+                </role>
+            </roles>
+        </assignments>
+        <transitions>
+            <transition>
+                <name>approve</name>
+                <target>approved</target>
+                <default>true</default>
+            </transition>
+            <transition>
+                <name>reject</name>
+                <target>rejected</target>
+                <default>false</default>
+            </transition>
+        </transitions>
+    </task>
+
+    <!-- Approved State -->
+    <state>
+        <name>approved</name>
+        <metadata>
+            <![CDATA[{"xy": [500, 50]}]]>
+        </metadata>
+        <actions>
+            <action>
+                <name>Approve Action</name>
+                <script>
+                    <![CDATA[
+                        import com.liferay.portal.kernel.workflow.WorkflowStatus;
+                        ExecutionContext.setWorkflowStatus(WorkflowStatus.APPROVED);
+                    ]]>
+                </script>
+                <script-language>groovy</script-language>
+                <execution-type>onEntry</execution-type>
+            </action>
+        </actions>
+    </state>
+
+    <!-- Rejected State -->
+    <state>
+        <name>rejected</name>
+        <metadata>
+            <![CDATA[{"xy": [500, 150]}]]>
+        </metadata>
+        <actions>
+            <action>
+                <name>Reject Action</name>
+                <script>
+                    <![CDATA[
+                        import com.liferay.portal.kernel.workflow.WorkflowStatus;
+                        ExecutionContext.setWorkflowStatus(WorkflowStatus.DENIED);
+                    ]]>
+                </script>
+                <script-language>groovy</script-language>
+                <execution-type>onEntry</execution-type>
+            </action>
+        </actions>
+    </state>
+
+</workflow-definition>
