@@ -4,7 +4,7 @@
 
 This comprehensive guide provides best practices, architectural patterns, and optimization techniques for creating production-ready Liferay fragments and client extensions. It covers responsive design, performance optimization, advanced functionality integration, and proven patterns from Johnson Matthey and Vanden Recycling implementations.
 
-## ⚠️ CRITICAL: File Encoding Mandate
+## CRITICAL: File Encoding Mandate
 
 **CRITICAL:** All fragment files (HTML, CSS, JS, JSON) must be encoded in **UTF-8 without BOM**.
 
@@ -23,7 +23,7 @@ This error is almost always caused by an incorrect or incomplete `fragment.json`
 
 **Solution:** Ensure all file paths in `fragment.json` use the correct keys (`htmlPath`, `cssPath`, etc.).
 
-#### ❌ Incorrect `fragment.json`
+#### [INCORRECT] Incorrect `fragment.json`
 ```json
 {
   "fragmentEntryKey": "my-fragment",
@@ -34,7 +34,7 @@ This error is almost always caused by an incorrect or incomplete `fragment.json`
 }
 ```
 
-#### ✅ Correct `fragment.json`
+#### [CORRECT] Correct `fragment.json`
 ```json
 {
   "fragmentEntryKey": "my-fragment",
@@ -56,7 +56,7 @@ This error means the `configuration.json` file has the wrong structure. All conf
 
 **Solution:** Wrap your `fields` array inside a `fieldSets` array.
 
-#### ❌ Incorrect `configuration.json` Structure
+#### [INCORRECT] Incorrect `configuration.json` Structure
 ```json
 {
     "fields": [
@@ -69,7 +69,7 @@ This error means the `configuration.json` file has the wrong structure. All conf
 }
 ```
 
-#### ✅ Correct `configuration.json` Structure
+#### [CORRECT] Correct `configuration.json` Structure
 ```json
 {
     "fieldSets": [
@@ -94,7 +94,7 @@ This error occurs when you use an invalid `type` for a field in `configuration.j
 
 **Solution:** Remove fields with these invalid types from `configuration.json`. Instead, make the corresponding HTML elements editable directly using `data-lfr-editable-type`.
 
-#### ❌ Incorrect `configuration.json`
+#### [INCORRECT] Incorrect `configuration.json`
 ```json
 {
     "fieldSets": [{
@@ -106,7 +106,7 @@ This error occurs when you use an invalid `type` for a field in `configuration.j
     }]
 }
 ```
-#### ✅ Correct Approach
+#### [CORRECT] Correct Approach
 1.  **Remove the field from `configuration.json`**.
 2.  **Make the HTML tag editable**:
     ```html
@@ -121,13 +121,13 @@ This happens when a variable in your `index.html` template (e.g., `${configurati
 
 **Solution:** Always provide a default value for every configuration variable used in your template.      
 
-#### ❌ Incorrect Template Expression
+#### [INCORRECT] Incorrect Template Expression
 ```html
 <h2>${configuration.title}</h2>
 <a href="${configuration.buttonLink}">Click me</a>
 ```
 
-#### ✅ Correct Template Expression
+#### [CORRECT] Correct Template Expression
 For strings and URLs, use `!'defaultValue'`.
 ```html
 <h2>${configuration.title!'My Default Title'}</h2>
@@ -167,7 +167,7 @@ This is a common, multi-faceted error that can prevent fragment collections from
     *   **Solution**:
         *   For `url` type fields, ensure `defaultValue` is always a non-empty, simple string (e.g., `"#"` or a full URL). Avoid relative paths in `defaultValue` within `configuration.json` as they can be problematic.
         *   **Best Practice**: For editable content such as image sources, link `href`s, and rich text, **DO NOT** create corresponding fields in `configuration.json`. Instead, make the HTML element directly editable using `data-lfr-editable-type` and provide the default value directly in `index.html`.
-            *   **❌ Incorrect `configuration.json` (for buttons/links)**:
+            *   **[INCORRECT] Incorrect `configuration.json` (for buttons/links)**:
                 ```json
                 // This is redundant and can cause issues
                 {
@@ -177,7 +177,7 @@ This is a common, multi-faceted error that can prevent fragment collections from
                   "defaultValue": "/some-path"
                 }
                 ```
-            *   **✅ Correct `index.html` (for editable links)**:
+            *   **[CORRECT] Correct `index.html` (for editable links)**:
                 ```html
                 <a href="/default-path" data-lfr-editable-id="myButtonLink" data-lfr-editable-type="link">
                   Click Here
