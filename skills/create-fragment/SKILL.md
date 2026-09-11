@@ -47,14 +47,14 @@ You MUST NOT attempt to build fragments from memory. You MUST use the `read_file
 
 ### 4. Implementation: Dynamic Data & Forms
 - **Liferay Objects:** For dynamic data, use the `lfr-editable` attribute instead of configuration mapping.
-- **Form Fragments:** If building for a form, you MUST bind input attributes to the system-provided `${input}` variable.
+- **Form Fragments:** If building for a form, you MUST bind input attributes to the system-provided `\${input}` variable.
 - **Server-Side Data:** Use the `restClient` object for all server-side API calls within the fragment template.
 
 ### 5. Validation Phase
 - **Structural Integrity:** Verify the fragment is in the correct `liferay/fragments/` directory and contains all mandatory files (including `configuration.json`).
 - **File References:** Ensure `fragment.json` contains the correct `configurationPath: "configuration.json"` key.
 - **Styling Check:** Ensure NO hardcoded colors or spacing exist in `index.css`.
-- **Form Mapping:** For form fragments, confirm that `name="${input.name}"` is correctly implemented.
+- **Form Mapping:** For form fragments, confirm that `name="\${input.name}"` is correctly implemented.
 
 ## Available Resources
 - Liferay Learn - Developing Page Fragments: https://learn.liferay.com/w/dxp/development/developing-page-fragments

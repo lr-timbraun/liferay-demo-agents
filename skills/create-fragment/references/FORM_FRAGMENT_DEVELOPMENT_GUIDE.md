@@ -9,33 +9,33 @@ This guide outlines the mandatory requirements for creating fragments that can b
     *   **Example:** `"fieldTypes": ["text", "string", "rich-text"]`
 
 ## HTML Structure & Binding
-Form fragments rely on the global `${input}` variable provided by the Form Container. You MUST bind HTML attributes to this variable for mapping to function.
+Form fragments rely on the global `\${input}` variable provided by the Form Container. You MUST bind HTML attributes to this variable for mapping to function.
 
 ### 1. Mandatory Input Name
 The `name` attribute of your HTML input/select/textarea element MUST be set to the system-provided name:
 ```html
-<input name="${input.name}" ... />
+<input name="\${input.name}" ... />
 ```
 
 ### 2. Value and Required Binding
 Bind the `value` and `required` states to the Object field configuration:
 ```html
 <input 
-    name="${input.name}" 
-    value="${input.value!''}" 
+    name="\${input.name}" 
+    value="\${input.value!''}" 
     [#if input.required]required[/#if]
     ... 
 />
 ```
 
 ### 3. Labels and Validation
-Use the `${input.label}` for the field label and `${input.errorMessage}` to display validation errors:
+Use the `\${input.label}` for the field label and `\${input.errorMessage}` to display validation errors:
 ```html
-<label>${input.label}</label>
-<div class="error-message">${input.errorMessage!''}</div>
+<label>\${input.label}</label>
+<div class="error-message">\${input.errorMessage!''}</div>
 ```
 
-## The `${input}` Variable Reference
+## The `\${input}` Variable Reference
 - `input.name`: (String) The internal name required for the `name` attribute.
 - `input.label`: (String) The user-friendly label for the field.
 - `input.value`: (Any) The current value of the field.
