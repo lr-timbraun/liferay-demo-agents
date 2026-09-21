@@ -1,4 +1,4 @@
-# Specification Guide: Liferay Objects (`liferay/specs/objects/`)
+# Specification Guide: Liferay Objects (`liferay/specs/objects/[object-name]/`)
 
 This reference document defines the mandatory sections and schema schemas for authoring Custom Object specifications.
 

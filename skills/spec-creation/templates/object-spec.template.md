@@ -3,6 +3,7 @@ id: SPEC-[UNIQUE_UUID_OR_TASK_ID]
 title: [Descriptive Specification Title]
 type: object
 status: Planned
+target_path: liferay/objects/[object-name]/
 last_updated: YYYY-MM-DDTHH:MM:SSZ
 ---
 

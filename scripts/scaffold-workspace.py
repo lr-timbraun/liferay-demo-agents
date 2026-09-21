@@ -193,6 +193,7 @@ def main():
     os.makedirs('./liferay/specs/client-extensions', exist_ok=True)
     os.makedirs('./liferay/specs/stylebooks', exist_ok=True)
     os.makedirs('./liferay/specs/pages', exist_ok=True)
+    os.makedirs('./liferay/specs/workflows', exist_ok=True)
     os.makedirs('./liferay/input', exist_ok=True)
     
     # Resolve global extension root directory

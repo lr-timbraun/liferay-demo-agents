@@ -3,6 +3,7 @@ id: SPEC-[UNIQUE_UUID_OR_TASK_ID]
 title: [Descriptive Specification Title]
 type: fragment
 status: Planned
+target_path: liferay/fragments/[collection-name]/fragments/[fragment-name]/
 last_updated: YYYY-MM-DDTHH:MM:SSZ
 ---
 

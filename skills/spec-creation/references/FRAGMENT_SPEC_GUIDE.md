@@ -1,4 +1,4 @@
-# Specification Guide: Page Fragments (`liferay/specs/fragments/`)
+# Specification Guide: Page Fragments (`liferay/specs/fragments/[collection-name]/fragments/[fragment-name]/`)
 
 This reference document defines the mandatory sections and layout schemas for authoring Page Fragment specifications.
 

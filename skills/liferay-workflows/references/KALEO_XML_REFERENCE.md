@@ -6,7 +6,7 @@ This reference guide provides the exact XML schema definition required to struct
 
 ## Standard Kaleo XML Schema
 
-Every XML workflow model file inside `liferay/workflows/` MUST validate against this exact layout pattern:
+Every XML workflow model file inside its assigned individual directory (e.g. `liferay/workflows/{workflow-name}/`) MUST validate against this exact layout pattern:
 
 ```xml
 <?xml version="1.0"?>

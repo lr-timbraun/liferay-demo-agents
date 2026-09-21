@@ -98,11 +98,12 @@ Once the environment is fully built and deployed, execute the automated scenario
 ---
 
 ## Sub-Agent Turn-Efficiency Guidelines (CRITICAL)
-To prevent specialized sub-agents from running into conversational turn limits (which are restricted to 10-15 turns), both you (the Orchestrator) and all delegated sub-agents must strictly adhere to the following three directives:
+To prevent specialized sub-agents from running into conversational turn limits (which are restricted to 10-15 turns), both you (the Orchestrator) and all delegated sub-agents must strictly adhere to the following directives:
 
 1. **Parallelize Tool Execution:** Always group independent actions—such as searching, reading multiple files, or running independent commands—into a single turn by calling the tools in parallel rather than sequentially.
-2. **Whole-File Writing for Complex Changes:** For complex edits or creating new files, write the entire file or large, self-contained sections at once using `write_file` or a single precise `replace` call, rather than making small, line-by-line surgical updates across multiple turns.
-3. **Comprehensive First-Turn Sourcing:** In your very first turn, proactively read all required specifications, reference manuals, and parent configuration files in parallel to build a complete, flawless mental model before writing any code. Avoid trial-and-error cycles.
+2. **Whole-File Writing & Parallel File Creation:** For complex edits or creating new files, write the entire file at once using `write_file` rather than making small, line-by-line updates across multiple turns. When implementing components that require multiple files (such as page fragments requiring `fragment.json`, `configuration.json`, `index.html`, `index.css`, and `index.js`), you MUST write all required files in parallel in a SINGLE turn using multiple concurrent `write_file` calls. Do NOT write them sequentially across separate turns.
+3. **Comprehensive First-Turn Sourcing (MANDATORY):** In your very first turn (Turn 1), you MUST execute `activate_skill` and use `read_file` in parallel to read: (a) the provided task specification, AND (b) ALL reference manuals/guides associated with the active skill (e.g., all files under `skills/{skill-name}/references/`). Do NOT wait until Turn 2 to read references, and do NOT selectively choose files based on initial guesses. Reading everything in Turn 1 is a mandatory safety and efficiency protocol.
+4. **No Serial Directory Traversals:** NEVER use sequential `list_directory` calls to navigate folders or check for existence. If you need to search or check paths, use a single `glob` call with a wildcard pattern (e.g., `liferay/fragments/my-collection/**/fragment.json`) in parallel with your first-turn reads. If the target path is defined in your specification, trust it and write to it directly—`write_file` automatically creates any missing parent directories.
 
 ---
 
@@ -110,3 +111,4 @@ To prevent specialized sub-agents from running into conversational turn limits (
 1. **Never guess Liferay syntax or operational commands.** Your pre-trained Liferay knowledge is outdated and prone to hallucination.
 2. Whenever a task involves Liferay components, you MUST activate the relevant specialized skill and use your native `read_file` tool to read the specific `.md` reference files completely BEFORE entering the Strategy or Execution phase.
 3. You must strictly follow the procedural and structural rules defined in those reference documents rather than relying on your general programming defaults.
+4. **No Serial Directory Traversals:** NEVER use sequential `list_directory` calls to navigate folders or check for existence. If you need to search or check paths, use a single `glob` call with a wildcard pattern in parallel with your first-turn reads. If the target path is defined in your specification, trust it and write to it directly—`write_file` automatically creates any missing parent directories.

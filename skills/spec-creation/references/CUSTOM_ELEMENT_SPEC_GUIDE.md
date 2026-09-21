@@ -1,4 +1,4 @@
-# Specification Guide: Custom Elements (`liferay/specs/client-extensions/`)
+# Specification Guide: Custom Elements (`liferay/specs/client-extensions/[extension-name]/`)
 
 This reference document defines the mandatory sections and project schemas for authoring React Custom Element specifications.
 

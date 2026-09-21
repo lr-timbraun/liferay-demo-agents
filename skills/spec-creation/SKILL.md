@@ -50,9 +50,10 @@ Every specification file created under `liferay/specs/` MUST terminate with thes
 
 | Spec Type | Target Directory | Active Reference Guide (Read on Demand ONLY) |
 | :--- | :--- | :--- |
-| **Page Fragment** | `liferay/specs/fragments/` | **`references/FRAGMENT_SPEC_GUIDE.md`** |
-| **Object Schema** | `liferay/specs/objects/` | **`references/OBJECT_SPEC_GUIDE.md`** |
-| **Custom Element** | `liferay/specs/client-extensions/` | **`references/CUSTOM_ELEMENT_SPEC_GUIDE.md`** |
+| **Page Fragment** | `liferay/specs/fragments/[collection-name]/fragments/[fragment-name]/` | **`references/FRAGMENT_SPEC_GUIDE.md`** |
+| **Object Schema** | `liferay/specs/objects/[object-name]/` | **`references/OBJECT_SPEC_GUIDE.md`** |
+| **Custom Element** | `liferay/specs/client-extensions/[extension-name]/` | **`references/CUSTOM_ELEMENT_SPEC_GUIDE.md`** |
+| **Workflow Schema**| `liferay/specs/workflows/[workflow-name]/` | (Standard XML template) |
 | **Site Copy Scenario** | `liferay/specs/site-copy/[scenario-name]/` | **`references/SITE_COPY_SPEC_GUIDE.md`** |
 
 ---

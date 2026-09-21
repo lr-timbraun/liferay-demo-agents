@@ -3,6 +3,7 @@ id: SPEC-[UNIQUE_UUID_OR_TASK_ID]
 title: [Descriptive Specification Title]
 type: custom-element
 status: Planned
+target_path: liferay/client-extensions/[extension-name]/
 last_updated: YYYY-MM-DDTHH:MM:SSZ
 ---
 
