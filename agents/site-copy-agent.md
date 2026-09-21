@@ -23,7 +23,7 @@ To guarantee total structural integrity, you MUST model your drafted specificati
 1.  **Design Library (Global Styles & Assets):**
     *   All copied assets (the Stylebook mapping and the literal HTML/CSS Page Fragments) must reside globally inside the designated target Design Library. They must NOT be created locally inside individual Sites.
 2.  **Master Page Template (Global Grid Shell):**
-    *   You MUST specify the creation of a master-level Page Template.
+    *   You MUST specify the creation of a Master Page Template.
     *   This Master Page is the global structural shell of the copy: it must house the **Global Header** fragment (top) and **Global Footer** fragment (bottom), with a centralized **Body Drop Zone** in the middle.
 3.  **Content Pages (Page Composition):**
     *   Every cloned page (e.g. `/home`, `/services`) must be specified as a standard **Content Page** that inherits directly from the Master Page.
@@ -48,8 +48,9 @@ Your workflow operates in a single, high-speed discovery and spec-generation pas
 1.  **DOM & Style Extraction:** Utilize the headless browser extraction tool (`browser-use` skill) to analyze and extract the exact, computed style properties, typography, and literal HTML source code structures from target site URLs.
 2.  **Existing Assets Audit:** Audit the specified tabular list of existing global assets to check for reusable components, Stylebooks, or page masters to prevent redundant specification drafting.
 3.  **Fragment Specification Drafting:** For any custom page block or responsive card zone that cannot be matched to an existing reusable fragment, use the `spec-creation` skill to draft a clean, decoupled Page Fragment specification file inside `liferay/specs/site-copy/[scenario-name]/fragments/`. You MUST specify that the building sub-agent copy the exact, literal HTML and CSS extracted from the source, prohibiting any recreated or mimicked code.
-4.  **Page Layout Specification Drafting:** Use the `spec-creation` skill to draft a master Site Copy page template specification file inside `liferay/specs/site-copy/[scenario-name]/composed_layout.md`, detailing how the copied atomic fragments must be assembled and mapping any repeating structures to Liferay native Collections.
-5.  **Execution Completion:** Update the relevant tasks in `IMPLEMENTATION_PLAN.md` to `Completed` with the paths to the drafted specifications, and immediately terminate, yielding control back to the Conductor to orchestrate parallel construction.
+4.  **Site Design Specification Drafting:** Use the `spec-creation` skill to draft a secure, dedicated Site Design specification file inside `liferay/specs/site-copy/[scenario-name]/site-design-spec.md`. You MUST populate its Section 2 table with the exact, literal brand colors, logo paths, and stylesheet overloads extracted in Step 1, and explicitly mandate that the `site-design-agent` compile them strictly using "Strict Copy Mode".
+5.  **Page Layout Specification Drafting:** Use the `spec-creation` skill to draft a master Page Assembly specification file inside `liferay/specs/site-copy/[scenario-name]/composed_layout.md`, detailing how the copied atomic fragments must be assembled and mapping any repeating structures to Liferay native Collections.
+6.  **Execution Completion:** Update the relevant tasks in `IMPLEMENTATION_PLAN.md` to `Completed` with the paths to the drafted specifications, and immediately terminate, yielding control back to the Conductor to orchestrate parallel construction.
 
 ## Implementation Standard
 - You have direct access to your defined skills portfolio. You MUST autonomously determine which of these skills are required to fulfill the Conductor's directive, and read their corresponding `SKILL.md` reference files before executing.
