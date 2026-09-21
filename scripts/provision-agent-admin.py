@@ -24,22 +24,22 @@ def generate_secure_password(length=16):
                 and any(c in "!@#$%" for c in password)):
             return password
 
-def make_request(url, payload=None, method='GET', headers=None):
-    """Helper to perform standard urllib JSON requests using pre-authorized session headers."""
-    req_headers = {
+def make_request(url, payload=None, method='GET', auth_header=None):
+    """Helper to perform standard urllib JSON requests."""
+    headers = {
         'Accept': 'application/json',
     }
-    if headers:
-        req_headers.update(headers)
+    if auth_header:
+        headers['Authorization'] = auth_header
     
     data_bytes = None
     if payload is not None:
-        req_headers['Content-Type'] = 'application/json'
+        headers['Content-Type'] = 'application/json'
         data_bytes = json.dumps(payload).encode('utf-8')
     elif method == 'POST':
         data_bytes = b''
 
-    req = urllib.request.Request(url, data=data_bytes, headers=req_headers, method=method)
+    req = urllib.request.Request(url, data=data_bytes, headers=headers, method=method)
     try:
         with urllib.request.urlopen(req) as response:
             status = response.status
@@ -58,12 +58,14 @@ def make_request(url, payload=None, method='GET', headers=None):
 def main():
     parser = argparse.ArgumentParser(description="Provision a dedicated Liferay administrator account for AI Agent use.")
     parser.add_argument('--host', help="Liferay host URL (e.g. https://localhost)")
+    parser.add_argument('--default-email', help="Default administrator email address")
+    parser.add_argument('--default-password', help="Default administrator password")
     parser.add_argument('--agent-email', default="shirley.temple@liferay.com", help="AI Agent admin email address")
     parser.add_argument('--agent-password', help="AI Agent secure password (generated automatically if omitted)")
     
     args = parser.parse_args()
     
-    # Resolve host using env_utils
+    # Resolve host and default credentials using env_utils
     host = args.host or env_utils.get_host()
             
     # Always ensure it is https:// (No HTTP allowed, HTTPS by default)
@@ -74,19 +76,23 @@ def main():
             
     host = host.rstrip('/')
     
+    default_email = args.default_email or env_utils.get_admin_email()
+    default_password = args.default_password or env_utils.get_admin_password()
     agent_email = args.agent_email
+    
     agent_password = args.agent_password
     if not agent_password:
         agent_password = generate_secure_password()
         
-    # Retrieve secure, pre-authorized session headers for default administrator (Completely shields password!)
-    default_auth_headers = env_utils.get_auth_headers()
+    # Construct Basic Auth header for default credentials
+    default_auth_str = f"{default_email}:{default_password}"
+    default_auth_header = "Basic " + base64.b64encode(default_auth_str.encode('utf-8')).decode('utf-8')
     
     print(f"Connecting to Liferay instance at {host} using default credentials...")
     
     # 1. Test connectivity & authentication
     conn_url = f"{host}/o/headless-admin-user/v1.0/my-user-account"
-    code, res = make_request(conn_url, headers=default_auth_headers)
+    code, res = make_request(conn_url, auth_header=default_auth_header)
     if code != 200:
         print(f"Error: Unable to authenticate with default credentials. HTTP {code}: {res.get('title', 'Unknown error')}")
         sys.exit(1)
@@ -95,7 +101,7 @@ def main():
     # 2. Search if the agent user already exists
     user_id = None
     search_url = f"{host}/o/headless-admin-user/v1.0/user-accounts?search=shirley"
-    code, res = make_request(search_url, headers=default_auth_headers)
+    code, res = make_request(search_url, auth_header=default_auth_header)
     if code == 200:
         items = res.get('items', [])
         for item in items:
@@ -115,13 +121,13 @@ def main():
             "givenName": "Shirley",
             "password": agent_password
         }
-        code, res = make_request(create_url, payload=payload, method='POST', headers=default_auth_headers)
+        code, res = make_request(create_url, payload=payload, method='POST', auth_header=default_auth_header)
         if code in (200, 201):
             user_id = res.get('id')
             print(f"Agent user created successfully! User ID: {user_id}")
         elif code == 409: # Conflict
             print("Conflict: A user with this alternate name or email already exists. Searching again...")
-            code, res = make_request(search_url, headers=default_auth_headers)
+            code, res = make_request(search_url, auth_header=default_auth_header)
             if code == 200:
                 for item in res.get('items', []):
                     if item.get('emailAddress') == agent_email:
@@ -138,7 +144,7 @@ def main():
     # 4. Resolve the 'Administrator' Role ID
     print("Resolving 'Administrator' role ID...")
     role_url = f"{host}/o/headless-admin-user/v1.0/roles?search=Administrator"
-    code, res = make_request(role_url, headers=default_auth_headers)
+    code, res = make_request(role_url, auth_header=default_auth_header)
     admin_role_id = None
     if code == 200:
         for item in res.get('items', []):
@@ -154,7 +160,7 @@ def main():
     # 5. Associate Administrator Role with User
     print(f"Assigning 'Administrator' role to agent user (ID {user_id})...")
     assoc_url = f"{host}/o/headless-admin-user/v1.0/roles/{admin_role_id}/association/user-account/{user_id}"
-    code, res = make_request(assoc_url, method='POST', headers=default_auth_headers)
+    code, res = make_request(assoc_url, method='POST', auth_header=default_auth_header)
     if code not in (200, 204):
         print(f"Error: Failed to assign role to agent user. HTTP {code}: {res.get('title', 'Unknown error')}")
         sys.exit(1)
@@ -164,12 +170,8 @@ def main():
     print("Verifying newly created Shirley Temple account works on Liferay...")
     agent_auth_str = f"{agent_email}:{agent_password}"
     agent_auth_header = "Basic " + base64.b64encode(agent_auth_str.encode('utf-8')).decode('utf-8')
-    agent_headers = {
-        "Authorization": agent_auth_header,
-        "Accept": "application/json"
-    }
     
-    code, res = make_request(conn_url, headers=agent_headers)
+    code, res = make_request(conn_url, auth_header=agent_auth_header)
     if code != 200:
         print(f"Error: New Shirley Temple account failed verification. HTTP {code}: {res.get('title', 'Unknown error')}")
         sys.exit(1)
