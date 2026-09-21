@@ -19,7 +19,15 @@ You MUST NOT attempt to configure stylesheet descriptors from memory. You MUST l
 - Place your CSS files under the `liferay/client-extensions/{extension_name}/` directory.
 - Ensure the folder contains a valid `client-extension.yaml` file defining the extension metadata.
 
+## Validation & Linting
+Before completing any CSS Client Extension task, you MUST run the CSS linter on your generated directory to verify YAML descriptors and balanced curly-braces syntax:
+
+```bash
+python skills/global-css-creation/scripts/lint_css.py liferay/client-extensions/{extension_name}
+```
+
 ## Available Resources
 - Liferay CSS Client Extension Guide: `references/LIFERAY_CSS_CLIENT_EXTENSION_GUIDE.md`
 - Descriptor Template: `templates/client-extension.yaml`
 - Stylesheet Template: `templates/custom.css`
+- Code Linter: `scripts/lint_css.py`

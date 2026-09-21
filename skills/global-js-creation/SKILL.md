@@ -19,7 +19,15 @@ You MUST NOT attempt to configure scripting descriptors from memory. You MUST lo
 - Place your Javascript files under the `liferay/client-extensions/{extension_name}/` directory.
 - Ensure the folder contains a valid `client-extension.yaml` file defining the extension metadata.
 
+## Validation & Linting
+Before completing any JS Client Extension task, you MUST run the JS linter on your generated directory to verify YAML descriptors, parentheses balance, and DOMContentLoaded best practices:
+
+```bash
+python skills/global-js-creation/scripts/lint_js.py liferay/client-extensions/{extension_name}
+```
+
 ## Available Resources
 - Liferay JS Client Extension Guide: `references/LIFERAY_JS_CLIENT_EXTENSION_GUIDE.md`
 - Descriptor Template: `templates/client-extension.yaml`
 - Script Template: `templates/custom.js`
+- Code Linter: `scripts/lint_js.py`
