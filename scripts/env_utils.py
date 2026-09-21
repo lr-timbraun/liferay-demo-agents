@@ -68,33 +68,37 @@ def get_admin_password():
     """
     raise PermissionError("Access Denied: Direct password extraction is prohibited. Please use get_auth_headers() instead to retrieve pre-authorized session tokens.")
 
-def get_auth_headers():
+def get_auth_headers(email=None, password=None):
     """
     Autonomously resolves pre-authorized HTTP Headers, utilizing a cached
     Liferay Session Cookie (JSESSIONID) to completely shield your raw password.
+    
+    If explicit email/password overrides are supplied, the cache is bypassed to
+    perform a fresh, on-demand credentials handshake.
     """
     host = get_host().rstrip('/')
     cache_dir = os.path.join(os.path.expanduser("~"), ".gemini", "tmp")
     os.makedirs(cache_dir, exist_ok=True)
     cache_path = os.path.join(cache_dir, "liferay_session.txt")
     
-    # 1. Check if a valid, cached session cookie currently exists (5-minute TTL)
-    if os.path.exists(cache_path):
-        mtime = os.path.getmtime(cache_path)
-        if (time.time() - mtime) < 300: # 5 minutes TTL
-            with open(cache_path, "r", encoding="utf-8") as f:
-                cookie_val = f.read().strip()
-            if cookie_val:
-                return {
-                    "Cookie": cookie_val,
-                    "Accept": "application/json"
-                }
+    # 1. Check if a valid, cached session cookie exists (ONLY when no overrides are passed)
+    if not email and not password:
+        if os.path.exists(cache_path):
+            mtime = os.path.getmtime(cache_path)
+            if (time.time() - mtime) < 300: # 5 minutes TTL
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    cookie_val = f.read().strip()
+                if cookie_val:
+                    return {
+                        "Cookie": cookie_val,
+                        "Accept": "application/json"
+                    }
                 
-    # 2. Cache expired or missing. Execute the Session Token Exchange handshake!
-    email = get_admin_email()
-    password = _get_private_admin_password()
+    # 2. Cache expired, missing, or overridden. Execute the Session Token Exchange handshake!
+    active_email = email or get_admin_email()
+    active_password = password or _get_private_admin_password()
     
-    auth_str = f"{email}:{password}"
+    auth_str = f"{active_email}:{active_password}"
     auth_header = "Basic " + base64.b64encode(auth_str.encode('utf-8')).decode('utf-8')
     
     # Target Liferay's safe headless user profile endpoint to perform handshake

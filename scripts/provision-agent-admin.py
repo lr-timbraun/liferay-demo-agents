@@ -58,6 +58,8 @@ def make_request(url, payload=None, method='GET', headers=None):
 def main():
     parser = argparse.ArgumentParser(description="Provision a dedicated Liferay administrator account for AI Agent use.")
     parser.add_argument('--host', help="Liferay host URL (e.g. https://localhost)")
+    parser.add_argument('--default-email', help="Default administrator email address")
+    parser.add_argument('--default-password', help="Default administrator password")
     parser.add_argument('--agent-email', default="shirley.temple@liferay.com", help="AI Agent admin email address")
     parser.add_argument('--agent-password', help="AI Agent secure password (generated automatically if omitted)")
     
@@ -79,8 +81,8 @@ def main():
     if not agent_password:
         agent_password = generate_secure_password()
         
-    # Retrieve secure, pre-authorized session headers for default administrator (Completely shields password!)
-    default_auth_headers = env_utils.get_auth_headers()
+    # Retrieve secure, pre-authorized session headers for default administrator (Pass overrides if provided!)
+    default_auth_headers = env_utils.get_auth_headers(email=args.default_email, password=args.default_password)
     
     print(f"Connecting to Liferay instance at {host} using default credentials...")
     
@@ -201,6 +203,16 @@ def main():
     with open(env_path, 'w', encoding='utf-8') as f:
         f.writelines(env_lines)
     print("Credentials saved successfully.")
+
+    # Active Cache Invalidation: Clear obsolete default administrator session-cookie cache
+    # This guarantees subsequent MCP Server verifications and agent runs do a fresh handshake using Shirley!
+    cache_path = os.path.join(os.path.expanduser("~"), ".gemini", "tmp", "liferay_session.txt")
+    if os.path.exists(cache_path):
+        try:
+            os.remove(cache_path)
+            print("Successfully cleared obsolete default administrator session cookie cache.")
+        except Exception:
+            pass
 
     # 8. Verify the Liferay API Proxy MCP Server is active and communicating over JSON-RPC stdio
     import subprocess
