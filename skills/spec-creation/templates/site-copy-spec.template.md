@@ -1,21 +1,20 @@
 ---
 id: SPEC-[UNIQUE_UUID_OR_TASK_ID]
-title: [Descriptive Specification Title]
+title: [Title]
 type: site-copy
 status: Planned
-target_path: liferay/specs/site-copy/[scenario-name]/
 last_updated: YYYY-MM-DDTHH:MM:SSZ
 ---
 
 # Specification: [Scenario Name]
 
 ## 1. Environment & Target Inputs
-*   **Source Site URL to Clone:** [Specify the external URL of the site to be cloned, e.g. https://yarefil-manufacturing.com]
-*   **Target Portal Instance Host:** [e.g., https://localhost]
-*   **Target Portal Site Name:** [Specify the friendly, human-readable Site name, e.g. Yarefil Cardiovascular Storefront]
-*   **Target Portal Site ERC:** [Define the specific DXP Site External Reference Code where this replica must be assembled]
-*   **Target Asset Space Name (Spaces):** [Specify the friendly, human-readable Space name, e.g. Yarefil Cardio Assets Space]
-*   **Target Asset Space ERC (Spaces):** [Define the high-level Space ERC used for Object-based CMS and Media]
+*   **Source Site URL to Clone:** [URL]
+*   **Target Portal Instance Host:** [Host]
+*   **Target Portal Site Name:** [Site Name]
+*   **Target Portal Site ERC:** [Site ERC]
+*   **Target Asset Space Name (Spaces):** [Space Name]
+*   **Target Asset Space ERC (Spaces):** [Space ERC]
 
 ## 2. Existing Global Asset Auditing
 | Type | Name | Workspace Path | System Location (Container -> Path/Set) | System ERC |

@@ -9,23 +9,23 @@ This reference document defines the mandatory sections and visual schemas for au
 Every Site Copy specification file MUST implement the following sections:
 
 ### 1. Environment & Target Inputs
-*   **Source Site URL to Clone:** [Specify the external URL of the site to be cloned, e.g. `https://prospect-domain.com`]
-*   **Target Portal Site Name:** [Specify the friendly, human-readable Site name]
-*   **Target Portal Site ERC:** [Define the specific DXP Site ERC where this replica is assembled]
-*   **Target Asset Space Name:** [Specify the friendly, human-readable Space name]
-*   **Target Asset Space ERC:** [Define the high-level Space ERC used for Object-based CMS]
+*   **Source Site URL to Clone:** The external URL of the site to be cloned, which the Site Copy Agent will use as its crawling target.
+*   **Target Portal Site Name:** Friendly, human-readable name of the destination site.
+*   **Target Portal Site ERC:** Stable, persistent External Reference Code of the destination site.
+*   **Target Asset Space Name:** Friendly, human-readable name of the connected Space used for media and content.
+*   **Target Asset Space ERC:** Stable, persistent External Reference Code of the connected Space.
 
 ### 2. Existing Global Asset Auditing
-The spec MUST list all pre-existing reusable assets using a single unified markdown table. Each entry must define:
-*  `Type`: [Asset class, e.g. stylebook, fragment, content-structure, content-item, file-media]
-*  `Name`: [Display name]
-*  `Workspace Path`: [Folder relative on-disk path for development]
-*  `System Location`: [The Space, Site, or Design Library container, including any hierarchical folders or fragment set paths]
-*  `System ERC`: [The External Reference Code inside Liferay]
+The specification must list all pre-existing reusable assets using a single unified markdown table to prevent duplicate asset creation on disk. Each entry must define:
+*   `Type`: The asset class, such as stylebook, fragment, content-structure, content-item, or file-media.
+*   `Name`: Friendly display name of the existing asset.
+*   `Workspace Path`: The relative folder path inside the local workspace for development lookup.
+*   `System Location`: The Space, Site, or Design Library container where the asset resides, including folder hierarchies.
+*   `System ERC`: The stable External Reference Code of the asset inside the portal.
 
 #### Mandatory Tabular Structure:
 ```
 | Type | Name | Workspace Path | System Location (Container -> Path/Set) | System ERC |
 | :--- | :--- | :--- | :--- | :--- |
-| `[type]` | [Name] | [relative_path] | [Space/Site/Library -> Folder/Set] | [ERC] |
+| [type] | [Name] | [relative_path] | [Space/Site/Library -> Folder/Set] | [ERC] |
 ```

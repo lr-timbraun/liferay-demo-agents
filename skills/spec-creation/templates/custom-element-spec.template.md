@@ -1,24 +1,25 @@
 ---
 id: SPEC-[UNIQUE_UUID_OR_TASK_ID]
-title: [Descriptive Specification Title]
+title: [Title]
 type: custom-element
 status: Planned
-target_path: liferay/client-extensions/[extension-name]/
 last_updated: YYYY-MM-DDTHH:MM:SSZ
 ---
 
 # Specification: [Extension Name]
 
 ## 1. React SPA Structure
-*   **React Components Tree:** [Describe parent and child dashboard views]
-*   **API Invocations:** [Standard dynamic REST fetches using active session]
-*   **Lifecycle Hook:** [Enforce React 18 createRoot and disconnectedCallback unmounts]
+*   **React Components Tree:** [Component Tree]
+*   **API Invocations:** [API Endpoints]
+*   **Lifecycle Hook:** [Unmount Hook]
 
 ## 2. Client-Extension YAML Properties
 *   **Extension Name:** [Name]
-*   **Type:** `customElement`
-*   **Friendly URL:** `/[extension-url-slug]`
-*   **OAuth2 Client ERC:** `[OAUTH_CLIENT_ERC]`
+*   **Type:** [Type]
+*   **Friendly URL:** [URL Slug]
+*   **OAuth2 Client ERC:** [OAuth2 ERC]
+
+---
 
 ## Additional Instructions
 

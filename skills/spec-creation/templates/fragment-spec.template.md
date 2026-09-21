@@ -1,28 +1,29 @@
 ---
 id: SPEC-[UNIQUE_UUID_OR_TASK_ID]
-title: [Descriptive Specification Title]
+title: [Title]
 type: fragment
 status: Planned
-target_path: liferay/fragments/[collection-name]/fragments/[fragment-name]/
 last_updated: YYYY-MM-DDTHH:MM:SSZ
 ---
 
 # Specification: [Fragment Name]
 
 ## 1. Visual Layout & HTML Structure
-*   **Visual Grid:** [e.g. 3-column responsive card layout]
-*   **Typography:** [e.g. Heading 2 bold `text-dark`, standard lead description]
-*   **Styles:** [e.g. subtle shadow hover animations and transition borders]
+*   **Visual Grid:** [Visual Grid Layout]
+*   **Typography:** [Typography Classes]
+*   **Styles:** [Hover & Animation Classes]
 
 ## 2. Configuration Options (configuration.json)
 *   **Fields Checklist:**
-    *   `fieldName`: [Name]
-    *   `type`: [Type: "color", "select", "text"]
-    *   `defaultValue`: [Default value]
+    *   `fieldName`: [Field Name]
+    *   `type`: [Field Type]
+    *   `defaultValue`: [Default Value]
 
 ## 3. Dynamic FreeMarker Variables (restClient)
-*   **API Path:** [e.g. `/o/c/supporttickets`]
-*   **Parsing Key:** [e.g. `jsonFactoryUtil.looseDeserialize(response)`]
+*   **API Path:** [REST API Path]
+*   **Parsing Key:** [looseDeserialize Key]
+
+---
 
 ## Additional Instructions
 

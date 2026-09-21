@@ -1,24 +1,25 @@
 ---
 id: SPEC-[UNIQUE_UUID_OR_TASK_ID]
-title: [Descriptive Specification Title]
+title: [Title]
 type: workflow
 status: Planned
-target_path: liferay/workflows/[workflow-name]/
 last_updated: YYYY-MM-DDTHH:MM:SSZ
 ---
 
 # Specification: [Workflow Name]
 
 ## 1. State Transitions Mapping
-*   **Start State:** [e.g. Created]
-*   **Task Node:** [e.g. Review Task]
-*   **End State:** [e.g. Approved / Denied]
+*   **Start State:** [Start State]
+*   **Task Node:** [Task Node]
+*   **End State:** [End State]
 
 ## 2. Roles Assignments
-*   **Target Scopes:** [e.g. Site Administrator, custom B2B Buyer role]
+*   **Target Scopes:** [Roles Scopes]
 
 ## 3. Transition Actions
-*   **Hook Type:** [e.g. Groovy Scripting status set, or external REST provider action client extension]
+*   **Hook Type:** [Hook Type]
+
+---
 
 ## Additional Instructions
 
