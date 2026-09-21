@@ -16,45 +16,42 @@ def get_env_path():
 
 def read_env_variable(key_name, default_value=None, required=False):
     """
-    Helper to read a single specific variable, prioritizing process environment
-    variables (os.environ) before falling back to parsing the local .env file.
+    Helper to read a single specific variable from the .env file on-demand.
     """
-    # 1. Prioritize process environment variables (Twelve-Factor Secure Injection)
-    if key_name in os.environ:
-        return os.environ[key_name]
-        
-    # 2. Fallback to parsing local .env file
     env_path = get_env_path()
-    if env_path:
-        with open(env_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith('#') and '=' in line:
-                    key, value = line.split('=', 1)
-                    if key.strip() == key_name:
-                        return value.strip()
-                        
+    if not env_path:
+        print("Error: .env file not found in project root or any parent directory.")
+        sys.exit(1)
+        
+    with open(env_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, value = line.split('=', 1)
+                if key.strip() == key_name:
+                    return value.strip()
+                    
     if required:
-        print(f"Error: Mandatory configuration key '{key_name}' missing in system environment or local .env file.")
+        print(f"Error: Mandatory configuration key '{key_name}' missing in {env_path}")
         sys.exit(1)
         
     return default_value
 
 def get_host():
     """
-    Parses configuration and returns the LIFERAY_HOST value, defaulting to standard LDM https://localhost.
+    Parses .env and returns the LIFERAY_HOST value on-demand, defaulting to standard LDM https://localhost.
     """
     return read_env_variable("LIFERAY_HOST", default_value="https://localhost")
 
 def get_admin_email():
     """
-    Parses configuration and returns the LIFERAY_ADMIN_EMAIL_ADDRESS.
+    Parses .env and returns the LIFERAY_ADMIN_EMAIL_ADDRESS on-demand.
     """
     return read_env_variable("LIFERAY_ADMIN_EMAIL_ADDRESS", required=True)
 
 def get_admin_password():
     """
-    Parses configuration and returns the LIFERAY_ADMIN_PASSWORD.
+    Parses .env and returns the LIFERAY_ADMIN_PASSWORD on-demand.
     """
     return read_env_variable("LIFERAY_ADMIN_PASSWORD", required=True)
 

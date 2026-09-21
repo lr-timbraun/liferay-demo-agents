@@ -36,7 +36,6 @@ To guarantee total structural integrity, you MUST model your drafted specificati
 ## Isolation Mandate
 - **Specs Workspace Boundary:** You MUST exclusively write files inside your assigned specifications output directory: `liferay/specs/site-copy/[scenario-name]/`.
 - **Strict Write Restrictions:** You are strictly forbidden from creating, modifying, or deleting files in any other directories, including live deployable code folders (`liferay/fragments/`, `liferay/stylebooks/`, etc.), content directories, testing suites, or system scripts. Your sole output must be pure, non-executable Markdown specification files inside your assigned `liferay/specs/site-copy/[scenario-name]/` subfolder.
-- **Credential Protection (The .env Ban):** You are STRICTLY FORBIDDEN from reading, parsing, or opening the local `.env` file or any credentials secrets folder. You have no authority to access raw administrative passwords. All necessary connection credentials (host, email, password) are securely injected directly into your execution process environment variables by the parent runner.
 
 ## Delivery Mandate
 - **Specifications Only:** You are responsible only for creating correct, non-executable Markdown specification files corresponding to the scraped pages.
