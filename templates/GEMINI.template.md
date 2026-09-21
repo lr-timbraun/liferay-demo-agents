@@ -37,24 +37,26 @@ Each sub-agent maintains an autonomous portfolio of skills. When delegating, pas
 
 1.  **Site Copy Agent (`site-copy-agent`)**: Single-pass discovery and spec-generation engine. Headlessly extracts DOM layouts from target URLs and drafts clean technical specifications inside `liferay/specs/site-copy/[scenario-name]/` to copy the exact literal code.
     *   *Skills Portfolio:* `[browser-use, spec-creation]`
-2. **Site Design Agent (`site-design-agent`)**: Translates wireframes, layout briefs, and assets into Stylebooks, global CSS layouts, and reusable Page Templates.
- * *Skills Portfolio:* `[style-book-creation, global-css-creation, global-js-creation, page-creation, browser-use]`
-3. **Fragment Agent (`fragment-agent`)**: Builds boardroom-ready, secure UI and Form Page Fragments utilizing FreeMarker, CSS, and JS.
- * *Skills Portfolio:* `[create-fragment, api-usage, generate-images]`
-4. **Object Agent (`object-agent`)**: Designs automated custom data models (Objects) and populates dataset records based on industry narratives.
- * *Skills Portfolio:* `[liferay-objects, api-usage, generate-images]`
-5. **Custom Element Agent (`custom-element-agent`)**: Builds decoupled React client extension widgets, managing OAuth2 security and clean lifecycle unmounting.
- * *Skills Portfolio:* `[create-custom-element, api-usage, generate-images]`
-6. **Commerce Agent (`commerce-agent`)**: Configures B2B catalog boundaries, categories, option templates, variant SKUs, specifications, and price lists.
- * *Skills Portfolio:* `[liferay-commerce, content-generation, api-usage, generate-images]`
-7. **Microservice Agent (`microservice-agent`)**: Packages backend client extensions (REST providers, Object Actions, Workflow Actions) using Python or Node.js.
- * *Skills Portfolio:* `[liferay-microservices, api-usage]`
-8. **Content Agent (`content-agent`)**: Models Liferay Web Content Structures, FreeMarker templates, and manages documents, files, and assets.
- * *Skills Portfolio:* `[liferay-content, content-generation, api-usage, generate-images]`
-9. **Workflow Agent (`workflow-agent`)**: Designs multi-stage, enterprise-grade approvals and state transitions using Liferay Kaleo XML workflow models.
- * *Skills Portfolio:* `[liferay-workflows, api-usage]`
-10. **Administration Agent (`administration-agent`)**: Provisions Sites, modern Asset Spaces, B2B accounts, Organization directories, and scoped roles/permissions.
- * *Skills Portfolio:* `[liferay-user-management, api-usage]`
+2.  **Site Design Agent (`site-design-agent`)**: The Stylist. Specialized in establishing visual corporate design foundations. Compiles Stylebook JSON delta sheets, global CSS extensions, and global JS overloads on disk.
+    *   *Skills Portfolio:* `[style-book-creation, global-css-creation, global-js-creation]`
+3.  **Page Assembly Agent (`page-assembly-agent`)**: The Composer. Specialized in programmatic and interactive in-portal page composition. Headlessly logs in to construct Master Page templates, regular Content Pages, stack fragments, and map dynamic B2B Collections.
+    *   *Skills Portfolio:* `[page-creation, browser-use]`
+4.  **Fragment Agent (`fragment-agent`)**: Builds boardroom-ready, secure UI and Form Page Fragments utilizing FreeMarker, CSS, and JS.
+    *   *Skills Portfolio:* `[create-fragment, api-usage, generate-images]`
+5.  **Object Agent (`object-agent`)**: Designs automated custom data models (Objects) and populates dataset records based on industry narratives.
+    *   *Skills Portfolio:* `[liferay-objects, api-usage, generate-images]`
+6.  **Custom Element Agent (`custom-element-agent`)**: Builds decoupled React client extension widgets, managing OAuth2 security and clean lifecycle unmounting.
+    *   *Skills Portfolio:* `[create-custom-element, api-usage, generate-images]`
+7.  **Commerce Agent (`commerce-agent`)**: Configures B2B catalog boundaries, categories, option templates, variant SKUs, specifications, and price lists.
+    *   *Skills Portfolio:* `[liferay-commerce, content-generation, api-usage, generate-images]`
+8.  **Microservice Agent (`microservice-agent`)**: Packages backend client extensions (REST providers, Object Actions, Workflow Actions) using Python or Node.js.
+    *   *Skills Portfolio:* `[liferay-microservices, api-usage]`
+9.  **Content Agent (`content-agent`)**: Models Liferay Web Content Structures, FreeMarker templates, and manages documents, files, and assets.
+    *   *Skills Portfolio:* `[liferay-content, content-generation, api-usage, generate-images]`
+10. **Workflow Agent (`workflow-agent`)**: Designs multi-stage, enterprise-grade approvals and state transitions using Liferay Kaleo XML workflow models.
+    *   *Skills Portfolio:* `[liferay-workflows, api-usage]`
+11. **Administration Agent (`administration-agent`)**: Provisions Sites, modern Asset Spaces, B2B accounts, Organization directories, and scoped roles/permissions.
+    *   *Skills Portfolio:* `[liferay-user-management, api-usage]`
 
 ---
 
