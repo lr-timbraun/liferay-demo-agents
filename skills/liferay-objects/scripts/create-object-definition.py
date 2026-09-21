@@ -2,7 +2,6 @@
 import os
 import sys
 import json
-import base64
 import argparse
 import urllib.request
 import urllib.error
@@ -11,22 +10,23 @@ import urllib.error
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from scripts import env_utils
 
-def make_request(url, payload=None, method='POST', auth_header=None):
-    """Helper to perform urllib JSON requests."""
-    headers = {
+def make_request(url, payload=None, method='POST', headers=None):
+    """Helper to perform urllib JSON requests using pre-authorized session headers."""
+    req_headers = {
         'Accept': 'application/json',
     }
-    if auth_header:
-        headers['Authorization'] = auth_header
+    # Inherit secure session headers from env_utils
+    if headers:
+        req_headers.update(headers)
     
     data_bytes = None
     if payload is not None:
-        headers['Content-Type'] = 'application/json'
+        req_headers['Content-Type'] = 'application/json'
         data_bytes = json.dumps(payload).encode('utf-8')
     elif method in ('POST', 'PUT'):
         data_bytes = b''
 
-    req = urllib.request.Request(url, data=data_bytes, headers=headers, method=method)
+    req = urllib.request.Request(url, data=data_bytes, headers=req_headers, method=method)
     try:
         with urllib.request.urlopen(req) as response:
             status = response.status
@@ -46,18 +46,13 @@ def main():
     parser = argparse.ArgumentParser(description="Create and publish a Liferay Object Definition.")
     parser.add_argument("payload_path", type=str, help="Path to the object-definition.json payload")
     parser.add_argument("--host", help="Override Liferay host URL")
-    parser.add_argument("--email", help="Override admin email")
-    parser.add_argument("--password", help="Override admin password")
     
     args = parser.parse_args()
     
-    # Resolve credentials
+    # Resolve host
     host = args.host or env_utils.get_host()
-    email = args.email or env_utils.get_admin_email()
-    password = args.password or env_utils.get_admin_password()
-    
-    if not host or not email or not password:
-        print("Error: Missing target host or administrator credentials.")
+    if not host:
+        print("Error: Missing target host.")
         sys.exit(1)
         
     host = host.rstrip('/')
@@ -74,9 +69,8 @@ def main():
             print(f"Error: Failed to parse JSON payload ({e})")
             sys.exit(1)
             
-    # Basic Auth Setup
-    auth_str = f"{email}:{password}"
-    auth_header = "Basic " + base64.b64encode(auth_str.encode('utf-8')).decode('utf-8')
+    # Retrieve secure, pre-authorized session headers (Completely shields password!)
+    auth_headers = env_utils.get_auth_headers()
     
     print(f"Connecting to Liferay instance at {host}...")
     
@@ -84,20 +78,17 @@ def main():
     create_url = f"{host}/o/object-admin/v1.0/object-definitions"
     print(f"Submitting Object Definition creation request for: {payload.get('name', 'Unnamed Object')}")
     
-    code, res = make_request(create_url, payload=payload, method='POST', auth_header=auth_header)
+    code, res = make_request(create_url, payload=payload, method='POST', headers=auth_headers)
     
     if code in (200, 201):
         definition_id = res.get("id")
-        definition_key = res.get("externalReferenceCode") or res.get("externalReferenceCode") or res.get("externalReferenceCode")
         print(f"[SUCCESS] Object Definition created! ID: {definition_id}")
     elif code == 409: # Conflict - Object already exists
-        # Attempt to search for existing definition by ERC or key
-        object_key = payload.get("externalReferenceCode") or payload.get("externalReferenceCode")
         print(f"[INFO] Object already exists (Conflict 409). Attempting to resolve details...")
         
         # Search URL
         search_url = f"{host}/o/object-admin/v1.0/object-definitions"
-        search_code, search_res = make_request(search_url, method='GET', auth_header=auth_header)
+        search_code, search_res = make_request(search_url, method='GET', headers=auth_headers)
         definition_id = None
         if search_code == 200:
             for item in search_res.get("items", []):
@@ -116,12 +107,11 @@ def main():
     publish_url = f"{host}/o/object-admin/v1.0/object-definitions/{definition_id}/publish"
     print(f"Publishing Object Definition (ID: {definition_id})...")
     
-    pub_code, pub_res = make_request(publish_url, method='POST', auth_header=auth_header)
+    pub_code, pub_res = make_request(publish_url, method='POST', headers=auth_headers)
     
     if pub_code in (200, 202):
          print("[SUCCESS] Object Definition published and synchronized successfully!")
     elif pub_code == 409:
-         # Already published
          print("[INFO] Object Definition is already published.")
     else:
          print(f"Error: Failed to publish Object Definition. HTTP {pub_code}: {pub_res.get('title', 'Unknown error')}")
