@@ -4,6 +4,14 @@ This reference document defines the mandatory sections and layout schemas for au
 
 ---
 
+## Mandate: High Modularity & Granular Reusability (CRITICAL)
+
+Custom Page Fragments MUST be designed and specified as highly modular, single components of a page layout (such as a Hero Banner, a specific Product Card, a Testimonial slider, a CTA Button, or a dynamic Feature block).
+* **NO Full-Page Fragments:** You are strictly forbidden from specifying or building "full page fragments" or bundling an entire page layout (such as header, body features, forms, and footers) into a single monolithic fragment.
+* **Proper Liferay Assembly:** A proper, high-quality Liferay page is constructed by dragging and dropping multiple small, reusable modular fragments onto the layout canvas. Do not attempt to short-circuit this by writing monolithic layouts.
+
+---
+
 ## Mandatory Markdown Structure
 
 Every Fragment specification file MUST implement the following sections:

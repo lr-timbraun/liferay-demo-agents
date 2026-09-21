@@ -7,7 +7,7 @@ import datetime
 from playwright.sync_api import sync_playwright
 
 # Import standard credential utility
-sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'scripts'))
 import env_utils
 
 def get_stylebooks_dir():

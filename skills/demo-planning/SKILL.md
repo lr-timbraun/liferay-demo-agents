@@ -29,6 +29,7 @@ You MUST NOT attempt to run any planning loops or interview the User from memory
 
 ### Step 3: Technical Implementation Plan Initialization
 - Co-draft the technical checklist (`IMPLEMENTATION_PLAN.md` based on `templates/IMPLEMENTATION_PLAN.template.md`) mapping the DAG execution sequence, defining what custom Objects, fragments, page templates, workflows, or client extensions must be built, compiled, and deployed by the swarm to support the storyboard scenes.
+- **Fragment Modularity Mandate (CRITICAL):** Custom Page Fragments MUST be designed as highly modular, single elements of a page (such as a Hero Banner, a specific Product Card, a Testimonial, or a dynamic Feature block). You are strictly forbidden from planning or creating "full page fragments" or bundling an entire page layout into a single monolithic fragment. A proper Liferay page is constructed by dragging and dropping multiple small, reusable modular fragments onto the layout canvas, not by rendering a single full-page fragment.
 
 ---
 

@@ -134,7 +134,7 @@ def create_workspace_gemini_md(extension_dir):
     if os.path.exists(gemini_path):
         return
         
-    template_path = os.path.join(extension_dir, 'templates', 'workspace-gemini.md')
+    template_path = os.path.join(extension_dir, 'templates', 'GEMINI.template.md')
     if os.path.exists(template_path):
         with open(template_path, 'r', encoding='utf-8') as f:
             content = f.read()
