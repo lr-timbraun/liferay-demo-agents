@@ -44,6 +44,8 @@ You MUST NOT attempt to build fragments from memory. You MUST use the `read_file
 ### 3. Styling & Polish
 - **MANDATE:** You MUST exclusively use `var(--token-name)` for all declarations where a matching Classic theme token exists.
 - **Lexicon/Clay:** Use Clay CSS classes for consistent Liferay UI patterns.
+- **CSS Namespacing & Scope Protection:** To prevent a fragment's custom style from leaking into other neighboring fragments or Liferay's edit-mode control menus, you MUST NOT write raw, un-scoped CSS element selectors (such as `div`, `button`, `a`, `p`, `.btn`) inside `index.css`.
+  *  **Wrapper Scoping:** Every custom style rule inside `index.css` MUST be strictly scoped under the fragment's unique root class (for example, nesting all styling selectors under `.fragment-collection-name-fragment-name` or wrapping them inside a unique container selector like `.my-custom-wrapper-class .btn`).
 
 ### 4. Implementation: Dynamic Data & Forms
 - **Liferay Objects:** For dynamic data, use the `lfr-editable` attribute instead of configuration mapping.

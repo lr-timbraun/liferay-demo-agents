@@ -19,6 +19,10 @@ You MUST NOT attempt to configure stylesheet descriptors from memory. You MUST l
 - Place your CSS files under the `liferay/client-extensions/{extension_name}/` directory.
 - Ensure the folder contains a valid `client-extension.yaml` file defining the extension metadata.
 
+### 2. CSS Namespacing & Administrative Scope Protection
+- **CRITICAL SCOPING RULE:** To prevent custom styling rules from leaking into and breaking Liferay's administrative overlays, control panels, editing frames, or page-editor sidebars, you MUST NOT write raw global element selectors (like `body`, `button`, `a`, `div`, `.btn`, `.form-control`) inside your global `custom.css`.
+- **Strict Scoping:** All custom global CSS selectors MUST be strictly namespaced under a site-specific parent class or a unique container wrapper (for example, wrapping overrides inside site-specific body classes or unique layout containers like `.site-name-wrapper .btn`). This guarantees that Liferay's parent workspace and administrative controls remain fully isolated and completely unaffected.
+
 ## Validation & Linting
 Before completing any CSS Client Extension task, you MUST run the CSS linter on your generated directory to verify YAML descriptors and balanced curly-braces syntax:
 
