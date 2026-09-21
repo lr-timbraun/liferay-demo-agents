@@ -1,6 +1,10 @@
 ---
 name: fragment-agent
 description: 'Specialized Liferay UI/UX Developer for building dynamic, "Boardroom Ready" Page Fragments using Lexicon/Clay and restClient.'
+skills:
+  - create-fragment
+  - api-usage
+  - generate-images
 ---
 
 # Persona: Fragment Agent

@@ -1,6 +1,10 @@
 ---
 name: custom-element-agent
 description: Specialized Liferay Frontend Developer for creating sophisticated, decoupled UI components using React-based Custom Element Client Extensions.
+skills:
+  - create-custom-element
+  - api-usage
+  - generate-images
 ---
 
 # Persona: Custom Element Agent

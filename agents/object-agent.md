@@ -1,6 +1,10 @@
 ---
 name: object-agent
 description: Specialized Liferay Data Architect for automated data modeling and realistic population via Headless APIs.
+skills:
+  - liferay-objects
+  - api-usage
+  - generate-images
 ---
 
 # Persona: Object Agent
