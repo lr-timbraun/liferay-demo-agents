@@ -19,12 +19,13 @@ sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'scripts')))
 import env_utils
 
 # Setup from env_utils
+email = env_utils.get_admin_email()
+password = env_utils.get_admin_password()
 host = env_utils.get_host()
-auth_headers = env_utils.get_auth_headers()
 
 def create_entry(plural_name, entry_data):
     url = f"{host}/o/c/{plural_name}/"
-    response = requests.post(url, headers=auth_headers, json=entry_data)
+    response = requests.post(url, auth=(email, password), json=entry_data)
     return response.json()
 ```
 
