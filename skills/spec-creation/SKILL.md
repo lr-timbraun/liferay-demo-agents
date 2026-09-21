@@ -20,7 +20,7 @@ Every spec file MUST start with this exact Front Matter header containing a uniq
 ---
 id: SPEC-[UNIQUE_UUID_OR_TASK_ID]
 title: [Descriptive Specification Title]
-type: [fragment | object | custom-element | site-copy | workflow]
+type: [fragment | object | custom-element | site-copy | site-design | page-assembly | workflow]
 status: [Planned | Drafted | User-Approved | Completed]
 last_updated: YYYY-MM-DDTHH:MM:SSZ
 ---
@@ -50,11 +50,12 @@ Every specification file created under `liferay/specs/` MUST terminate with thes
 
 | Spec Type | Target Directory | Active Reference Guide (Read on Demand ONLY) |
 | :--- | :--- | :--- |
-| **Page Fragment** | `liferay/specs/fragments/[collection-name]/fragments/[fragment-name]/` | **`references/FRAGMENT_SPEC_GUIDE.md`** |
-| **Object Schema** | `liferay/specs/objects/[object-name]/` | **`references/OBJECT_SPEC_GUIDE.md`** |
-| **Custom Element** | `liferay/specs/client-extensions/[extension-name]/` | **`references/CUSTOM_ELEMENT_SPEC_GUIDE.md`** |
-| **Workflow Schema**| `liferay/specs/workflows/[workflow-name]/` | (Standard XML template) |
+| **Page Fragment** | `liferay/specs/fragments/` | **`references/FRAGMENT_SPEC_GUIDE.md`** |
+| **Object Schema** | `liferay/specs/objects/` | **`references/OBJECT_SPEC_GUIDE.md`** |
+| **Custom Element** | `liferay/specs/client-extensions/` | **`references/CUSTOM_ELEMENT_SPEC_GUIDE.md`** |
 | **Site Copy Scenario** | `liferay/specs/site-copy/[scenario-name]/` | **`references/SITE_COPY_SPEC_GUIDE.md`** |
+| **Site Design (Styling)** | `liferay/specs/site-design/` | **`references/SITE_DESIGN_SPEC_GUIDE.md`** |
+| **Page Assembly (Layout)**| `liferay/specs/pages/` | **`references/PAGE_ASSEMBLY_SPEC_GUIDE.md`** |
 
 ---
 
@@ -63,4 +64,6 @@ Every specification file created under `liferay/specs/` MUST terminate with thes
 - Object Template: `templates/object-spec.template.md`
 - Custom Element Template: `templates/custom-element-spec.template.md`
 - Site Copy Template: `templates/site-copy-spec.template.md`
+- Site Design Template: `templates/site-design-spec.template.md`
+- Page Assembly Template: `templates/page-assembly-spec.template.md`
 - Workflow Template: `templates/workflow-spec.template.md`
