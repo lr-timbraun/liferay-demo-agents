@@ -70,6 +70,7 @@ def audit_agents():
         {"name": "Conductor", "file": "templates/GEMINI.template.md", "is_orchestrator": True},
         {"name": "Site Copy", "file": "agents/site-copy-agent.md"},
         {"name": "Site Design", "file": "agents/site-design-agent.md"},
+        {"name": "Page Assembly", "file": "agents/page-assembly-agent.md"},
         {"name": "Fragment", "file": "agents/fragment-agent.md"},
         {"name": "Object", "file": "agents/object-agent.md"},
         {"name": "Custom Element", "file": "agents/custom-element-agent.md"},
