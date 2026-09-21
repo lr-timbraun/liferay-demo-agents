@@ -39,43 +39,15 @@ def automate_ui_import(host, email, password, zipped_files):
         context = browser.new_context()
         page = context.new_page()
         
-        # 1. Login to Liferay (Twelve-Factor Password Shield)
-        print(f"Resolving secure session headers...")
-        auth_headers = env_utils.get_auth_headers()
-        cookie_header = auth_headers.get("Cookie")
+        # 1. Login
+        print(f"Navigating to login page...")
+        page.goto(f"{host}/c/portal/login")
+        page.wait_for_load_state("networkidle")
         
-        session_id = None
-        if cookie_header and "JSESSIONID=" in cookie_header:
-            # Parse out the JSESSIONID token value
-            for part in cookie_header.split(";"):
-                if part.strip().startswith("JSESSIONID="):
-                    session_id = part.strip().split("=", 1)[1]
-                    break
-        
-        from urllib.parse import urlparse
-        domain = urlparse(host).hostname
-        
-        if session_id and domain:
-            print("Injecting secure Session Cookie. Bypassing form login!")
-            context.add_cookies([{
-                "name": "JSESSIONID",
-                "value": session_id,
-                "domain": domain,
-                "path": "/"
-            }])
-            page.goto(host)
-            page.wait_for_load_state("networkidle")
-        else:
-            print("No active session cookie. Falling back to secure form login...")
-            page.goto(f"{host}/c/portal/login")
-            page.wait_for_load_state("networkidle")
-            
-            # Retrieve password strictly through private handler
-            private_password = password or env_utils._get_private_admin_password()
-            print(f"Logging in as agent: {email}...")
-            page.locator('#_com_liferay_login_web_portlet_LoginPortlet_login').fill(email)
-            page.locator('#_com_liferay_login_web_portlet_LoginPortlet_password').fill(private_password)
-            page.locator('button[id*="LoginPortlet_"][type="submit"]').first.click()
+        print(f"Logging in as agent: {email}...")
+        page.locator('#_com_liferay_login_web_portlet_LoginPortlet_login').fill(email)
+        page.locator('#_com_liferay_login_web_portlet_LoginPortlet_password').fill(password)
+        page.locator('button[id*="LoginPortlet_"][type="submit"]').first.click()
         
         # Wait for authentication body class
         page.wait_for_selector('body.signed-in', timeout=20000)
@@ -279,7 +251,7 @@ def main():
     # Fall back to env_utils if not passed via CLI
     host = args.host or env_utils.get_host()
     email = args.email or env_utils.get_admin_email()
-    password = args.password
+    password = args.password or env_utils.get_admin_password()
         
     try:
         import_ok = automate_ui_import(host, email, password, zipped_files)
