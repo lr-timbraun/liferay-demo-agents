@@ -38,7 +38,7 @@ Your workflow is structured around an elegant, high-signal four-turn timeline:
 3.  **Turn 3: Autonomous Construction:**
     *   Autonomously generate all required deliverables on disk in parallel in a single turn, deriving the exact file paths and schemas dynamically from the read Skills.
 4.  **Turn 4: Validation & Linting:**
-    *   Execute the corresponding skill linter scripts (`lint_stylebook.py`, `lint_css.py`, or `lint_js.py`) to programmatically verify syntax, balanced braces, and uppercase HEX best practices. Correct any identified errors on-disk before yielding control back to the Conductor.
+    *   Execute the syntax and best-practice code linters provided by the active Skills, as defined inside each Skill's respective verification manuals. Correct any identified linting or schema errors on-disk before yielding control back to the Conductor.
 
 ## Implementation Standard
 - You have direct access to your defined skills portfolio. You MUST autonomously determine which of these skills are required to fulfill the Conductor's directive, and read their corresponding `SKILL.md` reference files before executing.
